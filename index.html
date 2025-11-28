@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Security & Privacy Quiz Platform - 200 Questions</title>
+    <style>
+        :root {
+            --color-primary: #2180B3;
+            --color-primary-hover: #1a6a8f;
+            --color-background: #f5f5f5;
+            --color-surface: #ffffff;
+            --color-text: #333333;
+            --color-text-light: #666666;
+            --color-success: #27ae60;
+            --color-error: #e74c3c;
+            --color-warning: #f39c12;
+            --color-border: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--color-text);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-surface);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-primary), #1a5a7a);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), #27ae60);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .question-counter {
+            background: var(--color-background);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .score-display {
+            background: var(--color-background);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: var(--color-success);
+        }
+
+        .filter-section {
+            background: var(--color-background);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-section label {
+            font-weight: 600;
+            color: var(--color-text);
+            margin-right: 10px;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            padding: 8px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .question-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .option-group {
+            margin-bottom: 15px;
+        }
+
+        .option-input {
+            display: none;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--color-background);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .option-label:hover {
+            background: #f0f0f0;
+            border-color: var(--color-primary);
+        }
+
+        .option-input:checked + .option-label {
+            background: rgba(33, 128, 179, 0.1);
+            border-color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .option-input:disabled + .option-label {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 4px;
+            margin-right: 12px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid var(--color-warning);
+            border-radius: 4px;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+        }
+
+        .explanation-text {
+            font-size: 14px;
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 128, 179, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .results-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-score {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .results-message {
+            font-size: 18px;
+            margin: 15px 0;
+        }
+
+        .results-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .modal-options {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .modal-btn {
+            padding: 10px 15px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .quiz-info {
+                flex-direction: column;
+            }
+
+            .filter-section {
+                flex-direction: column;
+            }
+
+            .results-detail {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 IoT Security & Privacy Quiz</h1>
+            <p>200 Comprehensive Questions on IoT Architecture, Security, Privacy & Data Protection</p>
+            <div style="font-size: 12px; opacity: 0.85; margin-top: 10px;">Development: Ahmad Al-Batayneh</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="quiz-info">
+                <div class="question-counter">Question: <span id="currentQuestion">1</span> / 200</div>
+                <div class="score-display">Score: <span id="currentScore">0</span></div>
+            </div>
+
+            <div class="filter-section">
+                <label for="categoryFilter">Filter by Category:</label>
+                <select id="categoryFilter" onchange="filterQuestions()">
+                    <option value="all">All Questions</option>
+                    <option value="IoT Architecture">IoT Architecture</option>
+                    <option value="Perception Layer">Perception Layer</option>
+                    <option value="Transport Layer">Transport Layer</option>
+                    <option value="Processing Layer">Processing Layer</option>
+                    <option value="Application Layer">Application Layer</option>
+                    <option value="Access Control">Access Control</option>
+                    <option value="Privacy Frameworks">Privacy Frameworks</option>
+                    <option value="Data Protection">Data Protection</option>
+                </select>
+                <button class="btn-secondary" onclick="startQuiz()">Start Quiz</button>
+                <button class="btn-secondary" onclick="showAllQuestions()">View All Questions</button>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h2>Quiz Completed! 🎉</h2>
+                <div class="results-score" id="finalScore">0/200</div>
+                <div class="results-message" id="resultMessage"></div>
+                <div class="results-detail">
+                    <div class="result-item">
+                        <div class="result-label">PERCENTAGE</div>
+                        <div class="result-value" id="scorePercentage">0%</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">PERFORMANCE</div>
+                        <div class="result-value" id="performanceRating">-</div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="resetQuiz()" style="margin-top: 20px;">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // IoT Architecture (Q1-20)
+            { num: 1, category: "IoT Architecture", q: "What is the primary definition of IoT?", options: ["Connection of devices to a single server", "Interconnection of devices and objects that can be uniquely addressed through networks", "A wireless protocol for short-range communication", "Cloud storage service"], correct: 1, explanation: "IoT is defined as the interconnection of things (objects) that can be uniquely addressed through heterogeneous networks, enabling data exchange between devices." },
+            { num: 2, category: "IoT Architecture", q: "How many main layers does the IoT system architecture typically consist of?", options: ["2 layers", "3 layers", "4 layers", "5 layers"], correct: 2, explanation: "The IoT architecture is typically divided into four layers: Perception, Transport, Processing, and Application layers." },
+            { num: 3, category: "IoT Architecture", q: "Which of the following is NOT a foundational technology of IoT?", options: ["RFID", "Sensors", "Blockchain", "Smart technologies"], correct: 2, explanation: "While blockchain can be used in IoT, it is not a foundational technology. RFID, sensors, and smart technologies are the main foundational technologies of IoT." },
+            { num: 4, category: "IoT Architecture", q: "What year was the IoT concept proposed by MIT Auto-ID Laboratory?", options: ["1995", "1999", "2005", "2010"], correct: 1, explanation: "The IoT concept was proposed in 1999 by the Auto-ID Laboratory at MIT." },
+            { num: 5, category: "IoT Architecture", q: "According to Goldman Sachs, how many 'things' are expected to be connected to the Internet by 2020?", options: ["10 billion", "28 billion", "50 billion", "100 billion"], correct: 1, explanation: "Goldman Sachs predicted 28 billion connected devices by 2020, representing significant growth from the 1 billion fixed internet users in the 1990s." },
+            { num: 6, category: "IoT Architecture", q: "Which network technology enables massive IoT growth according to the materials?", options: ["IPv4", "IPv6 and 5G", "Bluetooth only", "WiFi only"], correct: 1, explanation: "IPv6 and 5G technologies are identified as enabling massive IoT growth through improved addressing and bandwidth capabilities." },
+            { num: 7, category: "IoT Architecture", q: "What is the main function of the Perception layer in IoT?", options: ["Store data", "Process data", "Collect and perceive data through sensors", "Deliver data to users"], correct: 2, explanation: "The Perception layer is responsible for perceiving external information and collecting data through various sensor nodes and RFID readers." },
+            { num: 8, category: "IoT Architecture", q: "Which layer is responsible for secure and reliable transmission of data?", options: ["Perception layer", "Transport/Transmission layer", "Processing layer", "Application layer"], correct: 1, explanation: "The Transport layer securely and reliably transmits information from the Perception layer to the Processing layer." },
+            { num: 9, category: "IoT Architecture", q: "What is the primary responsibility of the Processing layer?", options: ["Data collection", "Data transmission", "Intelligent computation and analysis", "User interaction"], correct: 2, explanation: "The Processing layer is responsible for calculating and processing information through intelligent computing, parallel computing, and cloud computing." },
+            { num: 10, category: "IoT Architecture", q: "What does the Application layer establish based on processed data?", options: ["Security protocols", "Business models and application systems", "Network infrastructure", "Sensor nodes"], correct: 1, explanation: "The Application layer uses processed information to establish corresponding business models and run application systems according to user needs." },
+
+            // Perception Layer (Q11-30)
+            { num: 11, category: "Perception Layer", q: "Which attack specifically targets RFID tag readers by tracking tag movement?", options: ["Location Tracking attack", "Sensor Capture attack", "Eavesdropping", "Replay attack"], correct: 0, explanation: "Location Tracking attacks exploit RFID technology to automatically track the movement and location of users carrying RFID tags." },
+            { num: 12, category: "Perception Layer", q: "What is RFID privacy breach risk?", options: ["Loss of encryption keys", "Unauthorized reading of tags exposing user information", "Network congestion", "Server overload"], correct: 1, explanation: "RFID Privacy Breach occurs when unauthorized parties read RFID tags, exposing the personal information associated with tagged objects or users." },
+            { num: 13, category: "Perception Layer", q: "Which cryptographic technique is recommended for resource-constrained IoT devices?", options: ["RSA encryption", "Lightweight cryptography like AES and ECC", "Complex key management", "No encryption"], correct: 1, explanation: "Lightweight cryptography such as AES (Advanced Encryption Standard) and ECC (Elliptic Curve Cryptography) are recommended for constrained IoT devices." },
+            { num: 14, category: "Perception Layer", q: "What is a major vulnerability in sensor networks?", options: ["High power consumption", "Sensor nodes can be easily captured and compromised", "Excessive bandwidth usage", "Incompatibility with cloud"], correct: 1, explanation: "Sensor nodes in IoT networks can be easily captured, cracked, or tampered with due to their unattended nature, leading to privacy and security breaches." },
+            { num: 15, category: "Perception Layer", q: "Which mitigation strategy protects against RFID cloning attacks?", options: ["Increasing transmit power", "Anti-cloning and RFID authentication protocols", "Using longer passwords", "Disabling wireless transmission"], correct: 1, explanation: "Anti-cloning and RFID authentication protocols are designed to prevent unauthorized cloning and impersonation of legitimate RFID tags." },
+            { num: 16, category: "Perception Layer", q: "What is the primary concern with fake sensor placement in IoT?", options: ["Power loss", "Data corruption and malicious data injection", "Network delays", "Bandwidth reduction"], correct: 1, explanation: "Placing fake/malicious sensors can inject corrupted or falsified data into the IoT system, compromising data integrity and system decisions." },
+            { num: 17, category: "Perception Layer", q: "How can sensor data be protected during aggregation?", options: ["Using faster processors", "Implementing secure aggregation protocols", "Increasing sensor battery life", "Reducing data size"], correct: 1, explanation: "Secure aggregation protocols protect sensor data during the fusion and aggregation process in the Perception layer." },
+            { num: 18, category: "Perception Layer", q: "What mitigation addresses physical tamper-resistance in IoT devices?", options: ["Software updates", "Tamper-resistant hardware design and shielding", "Network encryption", "Access control lists"], correct: 1, explanation: "Tamper-resistant hardware design and physical shielding prevent unauthorized access and modification of IoT devices." },
+            { num: 19, category: "Perception Layer", q: "Which attack involves interception of unencrypted sensor data?", options: ["Replay attack", "Eavesdropping", "Sinkhole attack", "Wormhole attack"], correct: 1, explanation: "Eavesdropping is the interception of unencrypted communication to gain unauthorized access to sensitive sensor data." },
+            { num: 20, category: "Perception Layer", q: "What is the purpose of energy-efficient intrusion detection systems in the Perception layer?", options: ["To increase processing speed", "To detect and prevent unauthorized access with minimal power consumption", "To improve sensor accuracy", "To encrypt all communications"], correct: 1, explanation: "Energy-efficient IDS are deployed to detect intrusion attempts while maintaining low power consumption, critical for battery-operated IoT devices." },
+
+            // Transport Layer (Q21-40)
+            { num: 21, category: "Transport Layer", q: "What is a Distributed Denial of Service (DDoS) attack?", options: ["A single attacker compromising one server", "Multiple attackers flooding a network with requests, overwhelming resources", "Encrypting all network traffic", "Upgrading server capacity"], correct: 1, explanation: "DDoS attacks involve multiple compromised nodes simultaneously sending traffic to overwhelm network resources and cause service outages." },
+            { num: 22, category: "Transport Layer", q: "Which attack manipulates routing paths in wireless sensor networks?", options: ["Spoofing attack", "Routing attack", "Traffic analysis", "Replay attack"], correct: 1, explanation: "Routing attacks manipulate routing paths to intercept, redirect, or corrupt data transmission between IoT devices." },
+            { num: 23, category: "Transport Layer", q: "What does traffic analysis aim to accomplish?", options: ["Increase bandwidth", "Monitor packet flow to infer user behavior and activities", "Compress data", "Reduce latency"], correct: 1, explanation: "Traffic analysis involves monitoring transmission traffic patterns to detect malicious behavior and infer information about user activities." },
+            { num: 24, category: "Transport Layer", q: "What is spoofing in the context of IoT networks?", options: ["Slowing down network traffic", "Forging MAC or IP addresses to impersonate legitimate devices", "Encrypting data", "Optimizing routing"], correct: 1, explanation: "Spoofing attacks involve forging MAC addresses, IP addresses, or other identifiers to impersonate legitimate devices and gain unauthorized access." },
+            { num: 25, category: "Transport Layer", q: "How can DDoS attacks be categorized?", options: ["Only traffic-based attacks", "Traffic/fragmentation, bandwidth, and application attacks", "Only encryption failures", "Only software vulnerabilities"], correct: 1, explanation: "DDoS attacks can be classified into traffic/fragmentation attacks, bandwidth attacks, and application-layer attacks based on their nature." },
+            { num: 26, category: "Transport Layer", q: "Which IoT networks are particularly vulnerable to routing attacks?", options: ["Wired networks only", "Wireless sensor networks based on IPv6", "Fiber optic networks", "Satellite networks"], correct: 1, explanation: "Wireless sensor networks using IPv6 are particularly vulnerable to routing attacks due to their mesh topology and limited resources." },
+            { num: 27, category: "Transport Layer", q: "What is a replay attack?", options: ["Creating new packets", "Resending previously captured packets to gain unauthorized access", "Deleting packets", "Modifying packet headers"], correct: 1, explanation: "In a replay attack, an attacker captures and later resends (replays) previously transmitted valid messages to deceive or gain unauthorized access." },
+            { num: 28, category: "Transport Layer", q: "Which countermeasure provides end-to-end protection in the Transport layer?", options: ["Firewall rules only", "End-to-end encryption for data confidentiality", "Increasing bandwidth", "Using longer passwords"], correct: 1, explanation: "End-to-end encryption ensures data confidentiality by protecting information from source to destination, preventing eavesdropping and tampering." },
+            { num: 29, category: "Transport Layer", q: "How can cross-network authentication challenges be addressed?", options: ["Ignoring different networks", "Adopting cross-network authentication and key management protocols", "Using single encryption method", "Disabling network communication"], correct: 1, explanation: "Cross-network authentication mechanisms solve authentication challenges caused by different wireless networks using different AKA (Authentication and Key Agreement) protocols." },
+            { num: 30, category: "Transport Layer", q: "What role do Intrusion Detection Systems (IDS) play in Transport layer security?", options: ["Store data", "Detect anomalies and unauthorized access attempts", "Compress packets", "Increase transmission speed"], correct: 1, explanation: "IDS continuously monitor network traffic to detect and alert on anomalous patterns that indicate potential attacks or intrusions." },
+
+            // Processing Layer (Q31-50)
+            { num: 31, category: "Processing Layer", q: "What is the primary security concern in the Processing layer?", options: ["Storage capacity", "Protecting private information during computation and analysis", "Network bandwidth", "Disk speed"], correct: 1, explanation: "The Processing layer must protect sensitive user information during computation, ensuring privacy throughout data processing and analysis." },
+            { num: 32, category: "Processing Layer", q: "What does location privacy refer to in IoT?", options: ["Securing storage devices", "Protecting user's past and present location information", "Encrypting files", "Firewall configuration"], correct: 1, explanation: "Location privacy involves protecting information about a user's current or historical location from unauthorized disclosure." },
+            { num: 33, category: "Processing Layer", q: "What is query privacy in the context of IoT?", options: ["Network query speed", "Privacy protection during data processing and mining of sensitive information", "Database query language", "Server response time"], correct: 1, explanation: "Query privacy protects against unauthorized inference of user activities and sensitive information through analysis of queries and processed data." },
+            { num: 34, category: "Processing Layer", q: "Which encryption technique allows computation on encrypted data?", options: ["Symmetric encryption", "Homomorphic encryption", "Hash functions", "Digital signatures"], correct: 1, explanation: "Homomorphic encryption enables secure computation directly on encrypted data without decryption, providing computation privacy." },
+            { num: 35, category: "Processing Layer", q: "What is differential privacy?", options: ["Privacy by obscuring network addresses", "A technique for anonymizing data while maintaining statistical accuracy", "Encrypting passwords", "User authentication method"], correct: 1, explanation: "Differential privacy provides anonymization by adding controlled noise to datasets, preventing individual identification while maintaining data utility." },
+            { num: 36, category: "Processing Layer", q: "What is Secure Multi-Party Computation (SMPC)?", options: ["A networking protocol", "Computation where multiple parties each hold private data without disclosing it to others", "A data storage method", "A firewall rule"], correct: 1, explanation: "SMPC allows multiple parties to jointly compute functions on their private data without revealing individual inputs to others." },
+            { num: 37, category: "Processing Layer", q: "What is a major vulnerability in centralized cloud architectures?", options: ["Low performance", "Increased confidentiality and integrity risks due to centralization", "Lack of storage", "Slow user interface"], correct: 1, explanation: "Centralized cloud architectures concentrate sensitive data and processing in one location, increasing the impact of potential security breaches." },
+            { num: 38, category: "Processing Layer", q: "How can blockchain enhance Processing layer security?", options: ["Increase storage capacity", "Provide integrity verification and audit trails", "Speed up processing", "Reduce power consumption"], correct: 1, explanation: "Blockchain provides distributed verification, transparency, and tamper-resistant audit trails, enhancing data integrity in the Processing layer." },
+            { num: 39, category: "Processing Layer", q: "What should organizations conduct regularly for cloud security?", options: ["Marketing campaigns", "Cloud audits and compliance checks", "User surveys", "Equipment maintenance"], correct: 1, explanation: "Continuous cloud audits and compliance checks help identify vulnerabilities and ensure adherence to security policies and regulations." },
+            { num: 40, category: "Processing Layer", q: "What risk exists during multi-party collaborative processing?", options: ["Network latency", "Exposure of private data during information exchange", "Increased storage", "Slow data retrieval"], correct: 1, explanation: "When multiple organizations collaborate, there is risk that sensitive data could be exposed during collaborative processing if proper security measures are not implemented." },
+
+            // Application Layer (Q41-60)
+            { num: 41, category: "Application Layer", q: "What is weak authentication vulnerability in the Application layer?", options: ["Strong passwords", "Poor access controls leading to unauthorized account access", "Multi-factor authentication", "Session tokens"], correct: 1, explanation: "Weak authentication allows attackers to gain unauthorized access to user accounts and sensitive application data." },
+            { num: 42, category: "Application Layer", q: "How can malware be injected into IoT applications?", options: ["Through secure APIs", "By exploiting insecure APIs or unpatched software", "Using encrypted channels", "Through firewalls"], correct: 1, explanation: "Malware can exploit insecure APIs, unverified updates, or software vulnerabilities to compromise application and device functionality." },
+            { num: 43, category: "Application Layer", q: "What risks arise from unauthorized data sharing in IoT applications?", options: ["Improved performance", "Data misuse and unauthorized resale of user data", "Better user experience", "Reduced costs"], correct: 1, explanation: "Unauthorized sharing or resale of collected user data violates privacy rights and can lead to identity theft and fraud." },
+            { num: 44, category: "Application Layer", q: "What is service disruption in IoT applications?", options: ["Data backup", "Manipulation of control commands to disrupt IoT services", "User interface design", "Database optimization"], correct: 1, explanation: "Service disruption occurs when attackers manipulate control commands to prevent legitimate users from receiving IoT services." },
+            { num: 45, category: "Application Layer", q: "What is regulatory non-compliance in IoT applications?", options: ["User complaints", "Violation of data protection laws like GDPR and HIPAA", "Performance issues", "Slow response times"], correct: 1, explanation: "Regulatory non-compliance occurs when IoT applications fail to meet legal requirements like GDPR, HIPAA, and other data protection regulations." },
+            { num: 46, category: "Application Layer", q: "What authentication method provides strong Application layer security?", options: ["Username and password only", "Multi-factor authentication (MFA)", "Biometrics alone", "No authentication"], correct: 1, explanation: "Multi-factor authentication requires multiple verification methods, significantly improving security by reducing unauthorized access risks." },
+            { num: 47, category: "Application Layer", q: "What is Privacy-by-Design principle?", options: ["Designing after deployment", "Integrating privacy protections into application development from the beginning", "Using encryption only", "Ignoring user privacy"], correct: 1, explanation: "Privacy-by-Design means building privacy protections into IoT applications and systems from the initial design phase, not as an afterthought." },
+            { num: 48, category: "Application Layer", q: "How should IoT APIs be secured?", options: ["Making them public", "Implementing secure authentication, encryption, and access controls", "Using simple passwords", "Disabling security features"], correct: 1, explanation: "IoT APIs must be secured through strong authentication, encrypted communication, input validation, and rate limiting to prevent unauthorized access." },
+            { num: 49, category: "Application Layer", q: "What does GDPR/HIPAA compliance audit ensure?", options: ["Network speed", "Adherence to data protection and privacy regulations", "User satisfaction", "System performance"], correct: 1, explanation: "GDPR (General Data Protection Regulation) and HIPAA (Health Insurance Portability and Accountability Act) audits verify compliance with privacy and data protection requirements." },
+            { num: 50, category: "Application Layer", q: "What is behavior anomaly detection in Application layer?", options: ["Monitoring network speed", "Using AI to identify unusual user or system behavior indicating potential attacks", "Measuring response time", "Counting database queries"], correct: 1, explanation: "AI-driven behavior anomaly detection systems identify deviations from normal patterns that may indicate security breaches or attacks." },
+
+            // Access Control (Q51-75)
+            { num: 51, category: "Access Control", q: "What is the primary purpose of access control in IoT?", options: ["Increase bandwidth", "Monitor access to resources and prevent unauthorized information flow", "Speed up processing", "Reduce storage"], correct: 1, explanation: "Access control ensures that only authorized entities can access specific resources, preventing unauthorized data exposure." },
+            { num: 52, category: "Access Control", q: "What is Role-Based Access Control (RBAC)?", options: ["Manual file permissions", "Access model where permissions are assigned based on user roles", "Biometric scanning", "Firewall rules"], correct: 1, explanation: "RBAC assigns permissions to users based on their roles in the organization, simplifying access management." },
+            { num: 53, category: "Access Control", q: "What is the key difference between RBAC and ABAC?", options: ["Speed of access", "ABAC allows fine-grained control based on attributes rather than predefined roles", "Network topology", "Data storage"], correct: 1, explanation: "ABAC provides more granular control by making decisions based on subject, object, and environmental attributes, offering flexibility beyond traditional roles." },
+            { num: 54, category: "Access Control", q: "What does ABAC stand for?", options: ["Access-Based Authorization Control", "Attribute-Based Access Control", "Application-Based Audit Control", "Advanced Backup Access Control"], correct: 1, explanation: "ABAC (Attribute-Based Access Control) makes access decisions based on assigned attributes of subjects, objects, and the environment." },
+            { num: 55, category: "Access Control", q: "In ABAC, what are the four-tuple components?", options: ["User, Server, Protocol, Port", "Subject, Object, Permission, Environment attributes", "File, Folder, Permission, Time", "Source, Destination, Protocol, Action"], correct: 1, explanation: "ABAC decisions are based on four components: Subject Attributes (S), Object Attributes (O), Permission Attributes (P), and Environment Attributes (E)." },
+            { num: 56, category: "Access Control", q: "What is the advantage of ABAC in IoT environments?", options: ["Lower cost", "Fine-grained control in dynamic, large-scale environments", "Easier passwords", "Reduced encryption"], correct: 1, explanation: "ABAC is ideal for IoT's dynamic, large-scale environments as it can adapt to changing attributes without predefined role definitions." },
+            { num: 57, category: "Access Control", q: "What challenges does access control address in IoT search?", options: ["User interface design", "Ensure permission guarantees and prevent unauthorized data access in multi-domain environments", "Improve search speed", "Reduce storage needs"], correct: 1, explanation: "IoT search requires access control mechanisms that work across different management domains with varying security levels." },
+            { num: 58, category: "Access Control", q: "What is Capability-Based Access Control (CapBAC)?", options: ["User-based permissions", "Access control where each entity holds capabilities (tokens) representing granted privileges", "Role-based security", "Network-based control"], correct: 1, explanation: "In CapBAC, access is controlled through capabilities—unforgeable tokens that represent specific privileges." },
+            { num: 59, category: "Access Control", q: "How does access control support data privacy in IoT?", options: ["By increasing processing speed", "By controlling who can access what data and under what conditions", "By improving network bandwidth", "By reducing storage requirements"], correct: 1, explanation: "Access control mechanisms ensure that sensitive data can only be accessed by authorized entities, protecting privacy." },
+            { num: 60, category: "Access Control", q: "What is the relationship between authentication and access control?", options: ["They are the same", "Authentication verifies identity; access control determines permissions", "Access control verifies identity", "They are unrelated"], correct: 1, explanation: "Authentication establishes who you are, while access control determines what you are allowed to do with resources." },
+            { num: 61, category: "Access Control", q: "How can IoT systems handle dynamic access scenarios?", options: ["Static rules only", "Using context-aware access control that adapts to changing conditions", "No changes allowed", "Manual intervention only"], correct: 1, explanation: "Dynamic access control in IoT adapts to changing user contexts, device states, and environmental conditions in real-time." },
+            { num: 62, category: "Access Control", q: "What is attribute delegation in ABAC?", options: ["Hiding attributes", "Allowing users to delegate certain attributes or permissions to other entities", "Removing permissions", "Disabling access"], correct: 1, explanation: "Attribute delegation enables flexible access management by allowing authorized entities to grant attributes or permissions to other users." },
+            { num: 63, category: "Access Control", q: "How should IoT access control handle heterogeneous networks?", options: ["Use single protocol", "Implement cross-network access control policies that account for different security requirements", "Disable access", "Manual verification"], correct: 1, explanation: "Heterogeneous IoT networks require unified access control mechanisms that can work across different network types and protocols." },
+            { num: 64, category: "Access Control", q: "What role does encryption play in access control?", options: ["No role", "Supports access control by ensuring only authorized users can decrypt sensitive data", "Slows down access", "Only for storage"], correct: 1, explanation: "Encryption complements access control by ensuring that even if data is accessed, only authorized decryption keys allow reading the content." },
+            { num: 65, category: "Access Control", q: "How can IoT systems audit access control?", options: ["No auditing needed", "Maintaining logs of all access attempts and decisions", "Random spot checks", "User self-reporting"], correct: 1, explanation: "Audit logs record all access attempts, successes, and failures, enabling detection of unauthorized access patterns and regulatory compliance." },
+
+            // Privacy Frameworks (Q66-90)
+            { num: 66, category: "Privacy Frameworks", q: "What is GDPR?", options: ["A networking protocol", "General Data Protection Regulation—EU regulation on data protection and privacy", "A firewall rule", "A database management system"], correct: 1, explanation: "GDPR is European Union legislation that regulates how personal data is collected, processed, and protected." },
+            { num: 67, category: "Privacy Frameworks", q: "What is Privacy by Design?", options: ["Design only the interface", "Building privacy protections into system design from the beginning", "Adding privacy later", "Ignoring privacy"], correct: 1, explanation: "Privacy by Design is a principle requiring privacy safeguards to be integrated into systems during the initial design phase." },
+            { num: 68, category: "Privacy Frameworks", q: "What does ISO/IEC 29100:2011 establish?", options: ["Networking standards", "Privacy principles and privacy management guidelines", "Encryption algorithms", "User interface standards"], correct: 1, explanation: "ISO/IEC 29100:2011 provides privacy principles and guidelines for implementing privacy management in information systems." },
+            { num: 69, category: "Privacy Frameworks", q: "What are Fair Information Practice Principles?", options: ["Marketing principles", "Guidelines for privacy protection in information practices", "Security protocols", "Network policies"], correct: 1, explanation: "Fair Information Practice Principles establish fundamental privacy rights including collection limitation, purpose specification, and data security." },
+            { num: 70, category: "Privacy Frameworks", q: "What is a Data Protection Impact Assessment (DPIA)?", options: ["User survey", "Evaluation of privacy risks and mitigation measures for processing activities", "Network test", "Performance measurement"], correct: 1, explanation: "DPIA is a systematic assessment of privacy risks associated with data processing operations and identification of mitigation strategies." },
+            { num: 71, category: "Privacy Frameworks", q: "What is informed consent in privacy frameworks?", options: ["Automatic data collection", "Users knowingly and voluntarily agreeing to data processing with full understanding of implications", "Silent collection", "No agreement needed"], correct: 1, explanation: "Informed consent requires organizations to clearly explain what data is collected, how it's used, and obtain explicit user agreement." },
+            { num: 72, category: "Privacy Frameworks", q: "What principle limits data collection to what's necessary?", options: ["Data maximization", "Data minimization", "No limits", "Unlimited collection"], correct: 1, explanation: "Data minimization principle states that only necessary personal data should be collected, reducing privacy risks." },
+            { num: 73, category: "Privacy Frameworks", q: "What does purpose specification require?", options: ["No stated purpose", "Clearly defining why data is collected and limiting use to those purposes", "Multiple unrelated uses", "Commercial exploitation"], correct: 1, explanation: "Purpose specification requires organizations to declare specific purposes for data collection and restrict usage to those declared purposes." },
+            { num: 74, category: "Privacy Frameworks", q: "What is the right to data portability?", options: ["Moving data across networks", "Users' ability to obtain and reuse their data across different services", "Network bandwidth", "Cloud storage"], correct: 1, explanation: "Data portability allows individuals to request and transfer their personal data between service providers." },
+            { num: 75, category: "Privacy Frameworks", q: "What is the right to erasure (right to be forgotten)?", options: ["Automatic deletion", "Users' right to request deletion of their personal data", "No deletion possible", "Permanent archiving"], correct: 1, explanation: "The right to erasure enables individuals to request deletion of personal data under specific circumstances defined by privacy regulations." },
+
+            // Data Protection (Q76-100)
+            { num: 76, category: "Data Protection", q: "What is data protection?", options: ["Faster processing", "Safeguarding personal data from unauthorized access and ensuring privacy", "Data backup only", "User tracking"], correct: 1, explanation: "Data protection encompasses techniques and practices to prevent unauthorized access, modification, or disclosure of personal information." },
+            { num: 77, category: "Data Protection", q: "What is encryption's role in data protection?", options: ["Increase storage", "Transform data into unreadable form accessible only with decryption keys", "Speed up access", "Reduce file size"], correct: 1, explanation: "Encryption converts sensitive data into an unreadable format, ensuring confidentiality even if data is intercepted or accessed illegally." },
+            { num: 78, category: "Data Protection", q: "What is data anonymization?", options: ["Using fake names", "Removing or modifying personal identifiers so individuals cannot be identified", "Hiding data", "Deleting data"], correct: 1, explanation: "Anonymization removes or alters identifying information, making it impossible to trace data back to individuals." },
+            { num: 79, category: "Data Protection", q: "What is k-anonymity?", options: ["Using k passwords", "Privacy technique ensuring each record is indistinguishable from at least k-1 others", "Cryptographic algorithm", "Network protocol"], correct: 1, explanation: "K-anonymity is a data protection technique that ensures each individual's data cannot be distinguished from at least k-1 other individuals." },
+            { num: 80, category: "Data Protection", q: "What does data integrity protection ensure?", options: ["Faster access", "Data has not been unauthorized modified or tampered with", "Encryption", "Backup creation"], correct: 1, explanation: "Data integrity protection uses checksums, digital signatures, and hash functions to ensure data has not been altered." },
+            { num: 81, category: "Data Protection", q: "What is access control in data protection?", options: ["No restrictions", "Limiting who can access which data based on roles and permissions", "Increasing bandwidth", "Reducing storage"], correct: 1, explanation: "Access control restricts data access to authorized users based on their identity, role, and need-to-know." },
+            { num: 82, category: "Data Protection", q: "What is a security audit?", options: ["User feedback survey", "Systematic examination of security measures and compliance", "Network speed test", "User satisfaction"], correct: 1, explanation: "Security audits evaluate whether data protection measures are properly implemented and maintained." },
+            { num: 83, category: "Data Protection", q: "What is incident response?", options: ["Ignoring breaches", "Procedures for detecting, containing, and recovering from security breaches", "Delay reporting", "No action plan"], correct: 1, explanation: "Incident response plans define steps for identifying security incidents, containing damage, and recovering systems." },
+            { num: 84, category: "Data Protection", q: "What is data retention policy?", options: ["Keep data forever", "Rules defining how long data is kept and when it must be deleted", "Immediate deletion", "Random deletion"], correct: 1, explanation: "Data retention policies specify retention periods to minimize privacy risks by deleting unnecessary data." },
+            { num: 85, category: "Data Protection", q: "What does secure data disposal require?", options: ["Moving to new storage", "Ensuring complete and irrecoverable deletion of sensitive data", "Archiving", "Transferring ownership"], correct: 1, explanation: "Secure disposal uses techniques like cryptographic erasure, overwriting, or physical destruction to ensure unrecoverable data deletion." },
+            { num: 86, category: "Data Protection", q: "What is end-to-end encryption?", options: ["Encryption only on servers", "Data encrypted on the sender side and decrypted only by the intended recipient", "Partial encryption", "No encryption"], correct: 1, explanation: "End-to-end encryption protects data throughout transmission, ensuring neither the service provider nor intermediaries can access unencrypted content." },
+            { num: 87, category: "Data Protection", q: "What is a security breach notification?", options: ["Optional reporting", "Required disclosure to affected individuals and regulators when data is compromised", "Silent handling", "Delayed reporting"], correct: 1, explanation: "Breach notification requirements mandate prompt disclosure of security incidents to affected individuals and relevant authorities." },
+            { num: 88, category: "Data Protection", q: "What protects data at rest?", options: ["No protection needed", "Encryption and physical security of storage devices", "Passwords only", "Firewalls only"], correct: 1, explanation: "Data at rest is protected through encryption, physical security of storage devices, and access controls." },
+            { num: 89, category: "Data Protection", q: "What protects data in transit?", options: ["Open networks", "Encryption (like TLS/SSL) and secure communication protocols", "No protection", "Firewalls only"], correct: 1, explanation: "Data in transit is protected using cryptographic protocols like TLS/SSL and secure VPNs to prevent eavesdropping." },
+            { num: 90, category: "Data Protection", q: "What is multi-factor authentication's role in data protection?", options: ["Speeds up login", "Reduces unauthorized access through multiple verification factors", "Increases storage", "Improves encryption"], correct: 1, explanation: "Multi-factor authentication strengthens data protection by requiring multiple proof-of-identity factors before granting access." },
+
+            // IoT Search & Multi-layered threats (Q91-120)
+            { num: 91, category: "IoT Architecture", q: "What is IoT search?", options: ["Web search", "System obtaining physical entity information in real-time from IoT and sensor networks", "File search", "Database query"], correct: 1, explanation: "IoT search refers to obtaining information about physical entities and objects in real-time from distributed IoT devices and sensor networks." },
+            { num: 92, category: "Transport Layer", q: "What is a wormhole attack?", options: ["Routing optimization", "Attacker captures and forwards data to another node for retransmission, difficult to detect", "Network upgrade", "System optimization"], correct: 1, explanation: "In a wormhole attack, the attacker doesn't need to compromise hosts; they simply tunnel and replay captured packets between distant network parts." },
+            { num: 93, category: "Transport Layer", q: "What is a sinkhole attack?", options: ["Drainage system", "Compromised node attracts information from surrounding nodes enabling further attacks", "Network maintenance", "Security upgrade"], correct: 1, explanation: "In a sinkhole attack, a compromised node becomes attractive to neighboring nodes, allowing the attacker to intercept and modify traffic." },
+            { num: 94, category: "Transport Layer", q: "What is a selective forwarding attack?", options: ["Optimizing routing", "Malicious nodes selectively drop or filter specific packets", "Data compression", "Load balancing"], correct: 1, explanation: "In selective forwarding, malicious nodes drop specific packets while allowing others, disrupting data delivery." },
+            { num: 95, category: "Transport Layer", q: "What is a HELLO flood attack?", options: ["Network greeting", "Malicious node broadcasts HELLO messages affecting network availability", "Welcome message", "Handshake protocol"], correct: 1, explanation: "HELLO flood attacks occur when a malicious node broadcasts wide-range HELLO messages, becoming a neighbor to all nodes." },
+            { num: 96, category: "Perception Layer", q: "What threat involves creating false sensor data?", options: ["Sensor upgrade", "Fabrication of false sensor readings or malicious data injection", "Network improvement", "Performance enhancement"], correct: 1, explanation: "Fabrication attacks involve injecting false or corrupted data from fake or compromised sensors into the IoT system." },
+            { num: 97, category: "IoT Architecture", q: "How do threats propagate across IoT layers?", options: ["They don't", "Lower layer compromises propagate upward, affecting higher layers", "Isolated to single layer", "Confined to periphery"], correct: 1, explanation: "Threats can propagate from lower to higher layers; for example, sensor compromise leads to corrupted data affecting processing and application layers." },
+            { num: 98, category: "Perception Layer", q: "What is data sovereignty in IoT?", options: ["Data ownership", "Digital information is subject to laws of the country where it's stored", "Data location", "Server management"], correct: 1, explanation: "Data sovereignty means digital information must comply with the laws and regulations of the jurisdiction where it's stored or processed." },
+            { num: 99, category: "Transport Layer", q: "What does IP spoofing enable?", options: ["Network optimization", "Attackers to hide identity and access systems of legitimate users", "Faster transmission", "Better routing"], correct: 1, explanation: "IP spoofing allows attackers to forge source IP addresses, impersonating legitimate users and systems." },
+            { num: 100, category: "Processing Layer", q: "What is location-based service privacy concern?", options: ["GPS accuracy", "Preventing unauthorized disclosure of user location and activity patterns", "Map accuracy", "Position precision"], correct: 1, explanation: "Location-based services can reveal sensitive location and query privacy information if not properly protected." },
+
+            // Additional Coverage (Q101-150)
+            { num: 101, category: "Perception Layer", q: "Which wireless technologies are used in IoT perception layer?", options: ["WiFi only", "WiFi, 5G, Bluetooth, LoRa and NFC", "Ethernet only", "Satellite only"], correct: 1, explanation: "IoT uses multiple wireless technologies including WiFi, 5G, Bluetooth, LoRa, and NFC for device communication." },
+            { num: 102, category: "Application Layer", q: "What is a service-level agreement (SLA) in IoT?", options: ["Storage space", "Contract defining performance standards and responsibilities between customer and provider", "Network protocol", "User interface"], correct: 1, explanation: "SLAs establish legal agreements between service providers and customers, defining obligations and performance metrics." },
+            { num: 103, category: "IoT Architecture", q: "What are the five phases of IoT systems?", options: ["Collection, Storage, Processing", "Perception, Storage, Processing, Transmission, Delivery", "Two phases", "Seven phases"], correct: 1, explanation: "IoT systems follow five phases: data collection, storage, processing, transmission, and delivery to end users." },
+            { num: 104, category: "Data Protection", q: "What is the difference between data loss and data leakage?", options: ["They're the same", "Data loss is accidental loss; data leakage is unauthorized transmission to unintended recipients", "No difference", "Both are intentional"], correct: 1, explanation: "Data loss is unintentional loss due to hardware/software failure; data leakage is intentional or malicious transmission of data." },
+            { num: 105, category: "Access Control", q: "What do subject attributes in ABAC represent?", options: ["Objects", "Characteristics of users/entities requesting access", "Environment", "Permissions"], correct: 1, explanation: "Subject attributes represent properties of the user or entity requesting access, such as role, department, or clearance level." },
+            { num: 106, category: "Perception Layer", q: "What is a Sybil attack?", options: ["System failure", "Malicious node assumes multiple false identities to compromise network", "Network malfunction", "Sensor error"], correct: 1, explanation: "In a Sybil attack, a single attacker controls multiple identities to gain disproportionate influence over peer-to-peer systems." },
+            { num: 107, category: "Transport Layer", q: "What is Byzantine failure?", options: ["System upgrade", "Malicious activity degrading cloud performance through server compromise", "User error", "Network congestion"], correct: 1, explanation: "Byzantine failure involves one or more nodes behaving maliciously or unpredictably, compromising system consensus." },
+            { num: 108, category: "Processing Layer", q: "What is edge computing?", options: ["Border networks", "Processing data closer to the source to reduce latency and improve privacy", "Cloud only", "Central processing"], correct: 1, explanation: "Edge computing processes data at the network edge near data sources, reducing transmission of raw data and improving response time." },
+            { num: 109, category: "Application Layer", q: "What is insufficient instant processing capacity threat?", options: ["Slow networks", "System cannot process incoming data in real-time causing delays or data loss", "User complaints", "Storage full"], correct: 1, explanation: "Insufficient processing capacity causes the system to fail to process data promptly, potentially losing critical information." },
+            { num: 110, category: "Privacy Frameworks", q: "What does transparency require in IoT privacy?", options: ["Hidden operations", "Clear disclosure of how personal data is collected, used, and protected", "No disclosure", "Minimal information"], correct: 1, explanation: "Transparency requires organizations to openly communicate their data practices so users understand how their information is handled." },
+            { num: 111, category: "Data Protection", q: "What is pseudonymization?", options: ["Using same names", "Replacing personal identifiers with pseudonyms to protect privacy", "No change", "Temporary deletion"], correct: 1, explanation: "Pseudonymization replaces identifying information with pseudonyms, making it harder to link data to individuals." },
+            { num: 112, category: "Access Control", q: "What is principle of least privilege?", options: ["Give all access", "Users receive minimum permissions needed to perform their functions", "No restrictions", "Equal access"], correct: 1, explanation: "Least privilege means users are granted only the minimum access rights necessary to perform their specific tasks." },
+            { num: 113, category: "Perception Layer", q: "What is an Witch attack?", options: ["Magic attack", "Malicious node exploits legitimate node failure to redirect future communications", "System glitch", "User error"], correct: 1, explanation: "In a Witch attack, when a legitimate node fails, subsequent communication is diverted through a malicious node." },
+            { num: 114, category: "Transport Layer", q: "What countermeasure prevents IP spoofing?", options: ["Increase speed", "Implement packet filtering and ingress/egress filtering", "Disable firewalls", "No prevention"], correct: 1, explanation: "Packet filtering, ingress and egress filtering, and source authentication mechanisms prevent IP spoofing attacks." },
+            { num: 115, category: "IoT Architecture", q: "What is RFID technology's primary IoT application?", options: ["Audio streaming", "Identifying and tracking objects and assets", "Video processing", "Text processing"], correct: 1, explanation: "RFID technology is primarily used for wireless identification and tracking of objects and assets in IoT systems." },
+            { num: 116, category: "Perception Layer", q: "What limits sensor network capabilities?", options: ["User preferences", "Limited memory, narrow bandwidth, and energy consumption constraints", "Network size", "Processing power"], correct: 1, explanation: "Sensor networks are constrained by limited resources—low memory, narrow bandwidth, and battery power limitations." },
+            { num: 117, category: "Processing Layer", q: "What is secure computation?", options: ["Fast processing", "Computing functions without revealing input data to participants", "Data storage", "Network communication"], correct: 1, explanation: "Secure computation allows computation while protecting the privacy of input data held by participants." },
+            { num: 118, category: "Application Layer", q: "What is regulatory compliance in IoT?", options: ["User feedback", "Adherence to legal requirements like GDPR, HIPAA, and industry standards", "Performance metrics", "User satisfaction"], correct: 1, explanation: "Regulatory compliance ensures IoT systems meet legal and regulatory requirements for data protection and privacy." },
+            { num: 119, category: "Privacy Frameworks", q: "What is consent withdrawal?", options: ["No change allowed", "Users' right to revoke previously given consent for data processing", "Permanent commitment", "Cannot be revoked"], correct: 1, explanation: "Users should be able to withdraw consent and request cessation of data processing activities." },
+            { num: 120, category: "Data Protection", q: "What is data classification?", options: ["Random sorting", "Categorizing data by sensitivity level to apply appropriate protection measures", "Storage organization", "Backup grouping"], correct: 1, explanation: "Data classification categorizes information by sensitivity, enabling appropriate security controls for different data types." },
+
+            // Advanced Topics (Q121-150)
+            { num: 121, category: "Access Control", q: "What is zero-trust security model?", options: ["Trust all users", "Never trust, always verify identities and permissions regardless of network location", "No verification", "Implicit trust"], correct: 1, explanation: "Zero-trust assumes no implicit trust; all users and devices must be verified continuously." },
+            { num: 122, category: "Privacy Frameworks", q: "What is accountability in privacy?", options: ["User error", "Organizations' responsibility for demonstrating compliance with privacy obligations", "No responsibility", "Hidden operations"], correct: 1, explanation: "Accountability requires organizations to demonstrate and document compliance with privacy principles and regulations." },
+            { num: 123, category: "Perception Layer", q: "What is sensor fusion?", options: ["Sensor cleaning", "Combining data from multiple sensors to improve accuracy and reliability", "Sensor separation", "Single sensor use"], correct: 1, explanation: "Sensor fusion combines data from multiple sensors to obtain more accurate and comprehensive information." },
+            { num: 124, category: "Transport Layer", q: "What is network segmentation?", options: ["No network division", "Dividing networks into segments with separate security controls", "Single network", "No protection"], correct: 1, explanation: "Network segmentation isolates critical systems and restricts traffic between segments to limit breach impact." },
+            { num: 125, category: "Processing Layer", q: "What is data masking?", options: ["Storage only", "Hiding sensitive data while retaining usability for testing and development", "Data deletion", "Encryption only"], correct: 1, explanation: "Data masking obscures sensitive information by replacing it with non-sensitive values, useful for safe testing." },
+            { num: 126, category: "Application Layer", q: "What is cross-site scripting (XSS) threat?", options: ["Legitimate scripting", "Injecting malicious code into applications accessed by users", "User scripts", "Network scripts"], correct: 1, explanation: "XSS attacks inject malicious scripts into web applications that execute in users' browsers, stealing credentials or session tokens." },
+            { num: 127, category: "Data Protection", q: "What is tokenization?", options: ["Wallet system", "Replacing sensitive data with non-sensitive tokens with mapping stored securely", "Symbolic representation", "Encryption"], correct: 1, explanation: "Tokenization replaces sensitive values with non-sensitive surrogates, reducing exposure of actual sensitive data." },
+            { num: 128, category: "Access Control", q: "What is session management security?", options: ["No sessions", "Controlling how user sessions are created, maintained, and terminated securely", "Permanent sessions", "No termination"], correct: 1, explanation: "Secure session management prevents session hijacking and fixation attacks through proper token handling." },
+            { num: 129, category: "Perception Layer", q: "What is threat landscape in IoT perception?", options: ["Single threat", "Combination of RFID, sensor, physical, and eavesdropping threats", "No threats", "Managed threats"], correct: 1, explanation: "IoT perception layer faces diverse threats including RFID tracking, sensor capture, physical tampering, and eavesdropping." },
+            { num: 130, category: "Privacy Frameworks", q: "What is controller in privacy regulations?", options: ["System administrator", "Entity determining purposes and means of personal data processing", "User", "Data owner"], correct: 1, explanation: "Data controller is the entity that decides why and how personal data is processed, bearing primary regulatory responsibility." },
+            { num: 131, category: "Transport Layer", q: "What is protocol stack security?", options: ["Single protocol", "Securing all network protocols from physical layer through application layer", "No layering", "Limited coverage"], correct: 1, explanation: "Protocol stack security addresses vulnerabilities at all network layers from physical transmission to application protocols." },
+            { num: 132, category: "Processing Layer", q: "What is database security?", options: ["No security", "Protecting databases through authentication, encryption, and access controls", "Open access", "No controls"], correct: 1, explanation: "Database security includes access controls, encryption, integrity checks, and audit logging to protect stored data." },
+            { num: 133, category: "Application Layer", q: "What is privilege escalation?", options: ["User promotion", "Attacker gaining higher privileges than intended, often through software vulnerabilities", "Access increase", "Role change"], correct: 1, explanation: "Privilege escalation exploits weaknesses allowing attackers to gain administrative or elevated access." },
+            { num: 134, category: "Data Protection", q: "What is privacy notice?", options: ["No notification", "Informing individuals about data collection, use, and protection practices", "Hidden information", "Optional disclosure"], correct: 1, explanation: "Privacy notices must clearly inform individuals about what data is collected, how it's used, and their privacy rights." },
+            { num: 135, category: "Perception Layer", q: "What is cooperative security in IoT?", options: ["No cooperation", "Devices sharing threat information and security alerts to collectively defend the network", "Isolated security", "Individual defense"], correct: 1, explanation: "Cooperative security enables IoT devices to share threat information and collaborate on defense against attacks." },
+            { num: 136, category: "Access Control", q: "What is delegation in access control?", options: ["No sharing", "Authorized users granting access rights to other users under controlled conditions", "Permanent transfer", "No limits"], correct: 1, explanation: "Delegation allows users to temporarily grant their access rights to others for specific purposes." },
+            { num: 137, category: "Transport Layer", q: "What is man-in-the-middle (MITM) attack?", options: ["Physical attack", "Attacker intercepts communication between two parties, eavesdropping or modifying messages", "Network failure", "User error"], correct: 1, explanation: "MITM attacks position the attacker between communicating parties to intercept, read, and modify transmitted data." },
+            { num: 138, category: "IoT Architecture", q: "What is cloud computing's role in IoT?", options: ["Local only", "Processing and storing massive IoT data with scalable resources", "No role", "Optional"], correct: 1, explanation: "Cloud computing provides the scalability and processing power necessary for IoT data analysis and storage." },
+            { num: 139, category: "Privacy Frameworks", q: "What is privacy-preserving technology?", options: ["No protection", "Technology enabling functions while protecting privacy, like differential privacy", "Data exposure", "No privacy"], correct: 1, explanation: "Privacy-preserving technologies enable useful operations while maintaining data confidentiality and individual privacy." },
+            { num: 140, category: "Data Protection", q: "What is secure erasure?", options: ["Data hiding", "Permanently removing data ensuring non-recovery using cryptographic or physical destruction", "Data archiving", "Backup deletion"], correct: 1, explanation: "Secure erasure ensures sensitive data cannot be recovered even through forensic techniques." },
+
+            // Coverage of All Major Threats (Q141-170)
+            { num: 141, category: "Transport Layer", q: "What is DDoS mitigation?", options: ["No mitigation", "Detecting and limiting DDoS attack impact through rate limiting and traffic filtering", "Accept attacks", "No defense"], correct: 1, explanation: "DDoS mitigation uses bandwidth management, rate limiting, and anomaly detection to protect against flooding attacks." },
+            { num: 142, category: "Perception Layer", q: "What is tamper detection?", options: ["Ignore changes", "Identifying unauthorized physical modification of IoT devices", "No monitoring", "Optional"], correct: 1, explanation: "Tamper detection alerts administrators to physical modification attempts, preventing compromised devices from operating." },
+            { num: 143, category: "Application Layer", q: "What is input validation?", options: ["No checks", "Verifying user input conforms to expected format and rejecting malicious input", "Accept all input", "No filtering"], correct: 1, explanation: "Input validation prevents injection attacks by ensuring data matches expected patterns and rejecting suspicious inputs." },
+            { num: 144, category: "Access Control", q: "What is role hierarchy in RBAC?", options: ["Flat structure", "Senior roles inherit permissions of junior roles, enabling hierarchical access management", "No hierarchy", "Equal roles"], correct: 1, explanation: "Role hierarchy in RBAC creates a structure where senior roles inherit junior roles' permissions." },
+            { num: 145, category: "Privacy Frameworks", q: "What is data breach assessment?", options: ["No assessment", "Evaluating impact of data breaches on affected individuals and required notifications", "Ignore breaches", "No evaluation"], correct: 1, explanation: "Data breach assessment determines scope, impact, and notification requirements when personal data is compromised." },
+            { num: 146, category: "Transport Layer", q: "What is encryption key management?", options: ["No management", "Securely generating, storing, and rotating cryptographic keys", "Keys exposed", "Single key"], correct: 1, explanation: "Proper key management ensures encryption keys are created securely, stored safely, and rotated regularly." },
+            { num: 147, category: "Processing Layer", q: "What is data governance?", options: ["No governance", "Framework defining how data is managed, protected, and used across the organization", "Free use", "No rules"], correct: 1, explanation: "Data governance establishes policies and procedures for managing organizational data assets responsibly." },
+            { num: 148, category: "Perception Layer", q: "What is authentication in sensor networks?", options: ["No authentication", "Verifying sensor identity and data authenticity before accepting measurements", "Accept all data", "No verification"], correct: 1, explanation: "Sensor authentication ensures data originates from legitimate sensors and hasn't been forged or modified." },
+            { num: 149, category: "IoT Architecture", q: "What threats does heterogeneous IoT face?", options: ["Uniform threats", "Varied threats across different network protocols, devices, and standards", "Single threat", "No variety"], correct: 1, explanation: "Heterogeneous IoT systems face diverse threats due to mix of incompatible security standards and devices." },
+            { num: 150, category: "Data Protection", q: "What is audit logging?", options: ["No logs", "Recording system and user activities for security and compliance monitoring", "Hidden logs", "No recording"], correct: 1, explanation: "Audit logs maintain records of access, changes, and activities for detecting unauthorized actions and compliance verification." },
+
+            // Final Advanced Topics (Q151-200)
+            { num: 151, category: "Privacy Frameworks", q: "What is privacy impact assessment?", options: ["User survey", "Evaluating how systems process personal data and identifying privacy risks", "No assessment", "Optional"], correct: 1, explanation: "Privacy impact assessment systematically evaluates data processing activities to identify and mitigate privacy risks." },
+            { num: 152, category: "Access Control", q: "What is temporal access control?", options: ["No time limits", "Granting access only during specific time periods or for specific durations", "Always available", "No restrictions"], correct: 1, explanation: "Temporal access control restricts access to specific times, enabling time-based security policies." },
+            { num: 153, category: "Perception Layer", q: "What is data aggregation security?", options: ["No security", "Protecting data during collection and combination from multiple sensors", "Ignore aggregation", "No protection"], correct: 1, explanation: "Secure aggregation prevents data corruption during the process of collecting and combining sensor data." },
+            { num: 154, category: "Transport Layer", q: "What is anomaly detection?", options: ["No detection", "Identifying network traffic or behavior deviating from normal patterns", "Accept all behavior", "No analysis"], correct: 1, explanation: "Anomaly detection identifies unusual patterns that may indicate security attacks or compromised systems." },
+            { num: 155, category: "Application Layer", q: "What is SQL injection attack?", options: ["Valid query", "Inserting malicious SQL code into input fields to compromise databases", "Data access", "Legitimate SQL"], correct: 1, explanation: "SQL injection inserts malicious SQL commands through user input to bypass authentication and access databases." },
+            { num: 156, category: "Data Protection", q: "What is backup and recovery?", options: ["Optional", "Creating copies of data and systems enabling restoration after data loss", "No recovery", "No backups"], correct: 1, explanation: "Backup and recovery procedures ensure data can be restored after loss, deletion, or corruption events." },
+            { num: 157, category: "IoT Architecture", q: "What is machine-to-machine (M2M) communication?", options: ["User interaction only", "Direct device-to-device communication for automated actions", "No automation", "Manual only"], correct: 1, explanation: "M2M enables devices to communicate directly, enabling automation without human intervention." },
+            { num: 158, category: "Processing Layer", q: "What is data lineage?", options: ["Data storage", "Tracking data flow from source through processing to final destination", "No tracking", "No flow"], correct: 1, explanation: "Data lineage provides visibility into how data moves and transforms through systems, useful for auditing." },
+            { num: 159, category: "Privacy Frameworks", q: "What is data subject rights?", options: ["No rights", "Individual rights to access, correct, and control their personal data", "Company rights only", "No control"], correct: 1, explanation: "Data subject rights enable individuals to know what data is held, correct inaccuracies, and control data use." },
+            { num: 160, category: "Perception Layer", q: "What is wireless security?", options: ["No security", "Protecting wireless communications using encryption and authentication", "Open broadcast", "No protection"], correct: 1, explanation: "Wireless security ensures confidentiality and integrity of data transmitted over wireless networks." },
+            { num: 161, category: "Transport Layer", q: "What is bandwidth utilization in DDoS?", options: ["No impact", "DDoS consumes bandwidth to prevent legitimate traffic from reaching targets", "Maintains traffic", "No effect"], correct: 1, explanation: "Bandwidth-based DDoS attacks consume network capacity, preventing legitimate users from accessing services." },
+            { num: 162, category: "Access Control", q: "What is conditional access control?", options: ["No conditions", "Granting access based on contextual factors like location, device, or time", "Unconditional", "No factors"], correct: 1, explanation: "Conditional access applies different security policies based on context—device security status, location, etc." },
+            { num: 163, category: "Application Layer", q: "What is API security?", options: ["No security", "Protecting APIs from unauthorized access and ensuring secure data exchange", "Public APIs", "No protection"], correct: 1, explanation: "API security includes authentication, encryption, rate limiting, and input validation to prevent API exploitation." },
+            { num: 164, category: "Data Protection", q: "What is privacy-preserving analytics?", options: ["No analytics", "Analyzing data while maintaining individual privacy through aggregation and anonymization", "Exposing data", "No analysis"], correct: 1, explanation: "Privacy-preserving analytics enable insights from data without revealing individual information." },
+            { num: 165, category: "IoT Architecture", q: "What is Software Defined Networking (SDN)?", options: ["No software", "Centralizing network control through software, enabling flexible security policies", "Hardware only", "No flexibility"], correct: 1, explanation: "SDN separates network control from forwarding, enabling programmable security and network management." },
+            { num: 166, category: "Perception Layer", q: "What is physical layer security?", options: ["No security", "Protecting against physical attacks on network infrastructure and devices", "No attacks", "No defense"], correct: 1, explanation: "Physical layer security prevents tampering with cables, devices, and infrastructure." },
+            { num: 167, category: "Processing Layer", q: "What is secure enclaves?", options: ["No enclaves", "Isolated trusted execution environments protecting sensitive computations", "Open execution", "No isolation"], correct: 1, explanation: "Secure enclaves provide isolated execution spaces where sensitive computations and data are protected from untrusted code." },
+            { num: 168, category: "Privacy Frameworks", q: "What is privacy governance?", options: ["No governance", "Organizational framework defining privacy policies, roles, and responsibilities", "No structure", "Ad-hoc"], correct: 1, explanation: "Privacy governance establishes organizational structures, policies, and procedures for privacy management." },
+            { num: 169, category: "Transport Layer", q: "What is certificate pinning?", options: ["No pinning", "Binding SSL/TLS certificates to prevent man-in-the-middle attacks", "Accept all certs", "No verification"], correct: 1, explanation: "Certificate pinning binds specific certificates to connections, preventing certificate substitution attacks." },
+            { num: 170, category: "Data Protection", q: "What is privacy by default?", options: ["No defaults", "Systems configured with privacy-protective settings by default", "Exposure default", "No protection"], correct: 1, explanation: "Privacy by default configures systems with maximum privacy protections, requiring users to opt-out rather than opt-in." },
+            { num: 171, category: "Access Control", q: "What is federated identity management?", options: ["Single system", "Managing identities across multiple organizations using shared standards", "No federation", "Isolated systems"], correct: 1, explanation: "Federated identity enables users to access resources across multiple organizations with single authentication." },
+            { num: 172, category: "Application Layer", q: "What is secure coding practices?", options: ["No practices", "Development techniques preventing common vulnerabilities like injection and XSS", "Vulnerable code", "No standards"], correct: 1, explanation: "Secure coding practices follow guidelines to prevent common vulnerabilities during application development." },
+            { num: 173, category: "Perception Layer", q: "What is biometric security in IoT?", options: ["Passwords only", "Using fingerprint, iris, or voice recognition for secure authentication", "No biometrics", "Optional"], correct: 1, explanation: "Biometric security provides strong authentication using unique biological characteristics resistant to spoofing." },
+            { num: 174, category: "Privacy Frameworks", q: "What is lawful basis in GDPR?", options: ["No basis needed", "Legal justification required for processing personal data", "Any processing", "No requirement"], correct: 1, explanation: "Lawful basis is the legal foundation (consent, contract, legal obligation, vital interests, public task, or legitimate interests) required for data processing under GDPR." },
+            { num: 175, category: "Transport Layer", q: "What is deep packet inspection?", options: ["Surface scanning", "Examining packet contents and payloads for threats and policy violations", "Header only", "No inspection"], correct: 1, explanation: "Deep packet inspection analyzes packet payloads to detect threats, malware, and policy violations." },
+            { num: 176, category: "Processing Layer", q: "What is secure multi-tenancy?", options: ["Single tenant", "Isolating data and resources of different users/organizations in shared environments", "No isolation", "Shared data"], correct: 1, explanation: "Secure multi-tenancy ensures data isolation between tenants in cloud environments through encryption and access controls." },
+            { num: 177, category: "Data Protection", q: "What is privacy wash?", options: ["Actual privacy", "Claiming privacy protections without implementing them", "Real protection", "Verified security"], correct: 1, explanation: "Privacy wash refers to misleading claims about privacy without substantive protections—a form of deception." },
+            { num: 178, category: "IoT Architecture", q: "What is predictive maintenance in IoT?", options: ["Reactive repair", "Using sensor data to predict equipment failures before they occur", "No prediction", "After failure"], correct: 1, explanation: "Predictive maintenance analyzes IoT sensor data to forecast failures, enabling proactive maintenance." },
+            { num: 179, category: "Access Control", q: "What is attribute inheritance in ABAC?", options: ["No inheritance", "Child attributes deriving values from parent attributes in hierarchies", "Flat attributes", "No hierarchy"], correct: 1, explanation: "Attribute inheritance enables organizational hierarchies where subordinate entities inherit attributes from superiors." },
+            { num: 180, category: "Privacy Frameworks", q: "What is privacy debt?", options: ["No debt", "Accumulated privacy technical and policy decisions not properly addressed", "No problems", "No consequences"], correct: 1, explanation: "Privacy debt represents deferred privacy work that accumulates if not addressed, increasing future risk." },
+            { num: 181, category: "Perception Layer", q: "What is sensor spoofing?", options: ["Real sensors", "Creating false sensor identities to inject malicious data", "Legitimate data", "No spoofing"], correct: 1, explanation: "Sensor spoofing involves impersonating legitimate sensors to inject corrupted or malicious data." },
+            { num: 182, category: "Transport Layer", q: "What is firewalling strategy?", options: ["No firewalls", "Using firewalls to block unauthorized traffic between network segments", "Open networks", "No filtering"], correct: 1, explanation: "Firewall strategies define rules for allowing or blocking traffic to protect networks from unauthorized access." },
+            { num: 183, category: "Application Layer", q: "What is runtime application self-protection (RASP)?", options: ["No protection", "Application monitoring and protecting itself from attacks during execution", "External only", "No monitoring"], correct: 1, explanation: "RASP enables applications to detect and prevent attacks in real-time during execution." },
+            { num: 184, category: "Data Protection", q: "What is privacy risk assessment?", options: ["No assessment", "Identifying and evaluating privacy risks associated with data processing", "No risks", "No evaluation"], correct: 1, explanation: "Privacy risk assessment systematically evaluates data processing activities to identify potential privacy harms." },
+            { num: 185, category: "Processing Layer", q: "What is containerization security?", options: ["No containers", "Securing containerized applications and runtime environments", "Unprotected containers", "No security"], correct: 1, explanation: "Container security protects containerized applications through isolation, image scanning, and runtime monitoring." },
+            { num: 186, category: "IoT Architecture", q: "What is edge-fog-cloud continuum?", options: ["Cloud only", "Processing distributed across edge devices, fog nodes, and cloud", "Single location", "No distribution"], correct: 1, explanation: "The edge-fog-cloud continuum distributes computing across multiple layers from edge devices to central cloud." },
+            { num: 187, category: "Access Control", q: "What is break-glass access?", options: ["No access", "Emergency override allowing temporary elevated access for crisis situations", "Always blocked", "No emergencies"], correct: 1, explanation: "Break-glass access provides emergency backdoor access for administrators during critical situations, with audit logging." },
+            { num: 188, category: "Privacy Frameworks", q: "What is privacy by accountability?", options: ["No accountability", "Demonstrating privacy compliance through documentation and verification", "No documentation", "Hidden compliance"], correct: 1, explanation: "Privacy by accountability requires organizations to prove privacy compliance through documentation and transparent practices." },
+            { num: 189, category: "Perception Layer", q: "What is calibration attacks on sensors?", options: ["Normal operation", "Manipulating sensor calibration to cause false readings", "Accurate readings", "No attacks"], correct: 1, explanation: "Calibration attacks modify sensor settings to produce intentionally false or misleading measurements." },
+            { num: 190, category: "Transport Layer", q: "What is network monitoring?", options: ["No monitoring", "Continuously observing network traffic to detect threats and anomalies", "Passive only", "No detection"], correct: 1, explanation: "Network monitoring analyzes traffic patterns to detect security incidents, performance issues, and policy violations." },
+            { num: 191, category: "Application Layer", q: "What is Web Application Firewall (WAF)?", options: ["No firewall", "Protecting web applications by filtering HTTP traffic and blocking common attacks", "Network firewall only", "No protection"], correct: 1, explanation: "WAF protects web applications by inspecting and filtering web traffic to prevent application-layer attacks." },
+            { num: 192, category: "Data Protection", q: "What is data discovery?", options: ["No discovery", "Finding and inventorying sensitive data across systems", "No inventory", "Unknown data"], correct: 1, explanation: "Data discovery tools locate and catalog sensitive information across systems to enable proper protection." },
+            { num: 193, category: "IoT Architecture", q: "What is digital twin in IoT?", options: ["Single system", "Virtual replica of physical IoT system enabling simulation and analysis", "No simulation", "One version"], correct: 1, explanation: "Digital twins are virtual representations of physical IoT systems enabling testing and optimization." },
+            { num: 194, category: "Access Control", q: "What is just-in-time (JIT) access?", options: ["No timing", "Granting temporary elevated access for specific tasks, automatically expiring", "Permanent access", "No expiration"], correct: 1, explanation: "JIT access provides temporary elevated privileges that automatically expire after task completion." },
+            { num: 195, category: "Privacy Frameworks", q: "What is privacy label?", options: ["No label", "Simple visual representation of app/service privacy practices for user understanding", "Unclear", "No summary"], correct: 1, explanation: "Privacy labels provide simplified, standardized summaries of data practices for easy user understanding." },
+            { num: 196, category: "Transport Layer", q: "What is zero-knowledge proof?", options: ["No proof", "Cryptographic technique proving knowledge without revealing the information", "Full disclosure", "No knowledge"], correct: 1, explanation: "Zero-knowledge proofs enable verification of information without disclosing the underlying data." },
+            { num: 197, category: "Processing Layer", q: "What is federated learning?", options: ["Centralized training", "Training machine learning models across distributed data without centralizing data", "One location", "No distribution"], correct: 1, explanation: "Federated learning trains models across distributed devices without transferring raw data to central servers." },
+            { num: 198, category: "Data Protection", q: "What is privacy sentiment analysis?", options: ["No analysis", "Analyzing public opinion about organization's privacy practices", "No opinion", "No sentiment"], correct: 1, explanation: "Privacy sentiment analysis monitors public perception of privacy practices through social media and reviews." },
+            { num: 199, category: "Perception Layer", q: "What is adversarial examples in IoT?", options: ["No attacks", "Crafted inputs causing machine learning models to fail or misclassify", "Normal inputs", "No failure"], correct: 1, explanation: "Adversarial examples are carefully crafted inputs that fool ML models while appearing normal to humans." },
+            { num: 200, category: "Privacy Frameworks", q: "What is trustworthy AI in IoT privacy?", options: ["No trust", "AI systems being fair, transparent, and respecting privacy in IoT applications", "Untrusted", "No respect"], correct: 1, explanation: "Trustworthy AI ensures IoT AI systems are transparent, fair, accountable, and respect individual privacy." }
+        ];
+
+        let filteredQuestions = [...questions];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = [];
+        let quizStarted = false;
+
+        function filterQuestions() {
+            const category = document.getElementById('categoryFilter').value;
+            if (category === 'all') {
+                filteredQuestions = [...questions];
+            } else {
+                filteredQuestions = questions.filter(q => q.category === category);
+            }
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = [];
+            renderQuestion();
+        }
+
+        function startQuiz() {
+            quizStarted = true;
+            document.getElementById('categoryFilter').disabled = true;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= filteredQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = filteredQuestions[currentQuestionIndex];
+            const container = document.getElementById('questionsContainer');
+            
+            let optionsHTML = '';
+            q.options.forEach((option, index) => {
+                const letterCode = String.fromCharCode(65 + index);
+                optionsHTML += `
+                    <div class="option-group">
+                        <input type="radio" class="option-input" name="answer${q.num}" id="option${index}" value="${index}" onchange="handleAnswer(${index})">
+                        <label for="option${index}" class="option-label">
+                            <span class="option-letter">${letterCode}</span>
+                            <span class="option-text">${option}</span>
+                        </label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-title">Question ${q.num}</div>
+                    <div class="question-text">${q.q}</div>
+                    <div style="margin-bottom: 15px;">
+                        <span class="category-tag">${q.category}</span>
+                    </div>
+                    ${optionsHTML}
+                    <div id="answerFeedback" style="display: none;"></div>
+                    <div class="explanation" id="explanation">
+                        <div class="explanation-title">📚 Explanation</div>
+                        <div class="explanation-text">${q.explanation}</div>
+                    </div>
+                    <div class="button-group">
+                        ${currentQuestionIndex > 0 ? '<button class="btn-secondary" onclick="previousQuestion()">← Previous</button>' : ''}
+                        <button class="btn-primary" onclick="nextQuestion()" id="nextBtn">Next Question →</button>
+                    </div>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function handleAnswer(selectedIndex) {
+            const q = filteredQuestions[currentQuestionIndex];
+            answered[currentQuestionIndex] = selectedIndex;
+            
+            if (selectedIndex === q.correct) {
+                if (!answered.includes(currentQuestionIndex) || answered[currentQuestionIndex] !== q.correct) {
+                    score++;
+                }
+            }
+
+            // Show feedback
+            const feedbackDiv = document.getElementById('answerFeedback');
+            if (selectedIndex === q.correct) {
+                feedbackDiv.innerHTML = '<div style="color: var(--color-success); font-weight: bold; padding: 10px; background: rgba(39, 174, 96, 0.1); border-radius: 6px; margin-bottom: 15px;">✓ Correct!</div>';
+                feedbackDiv.style.display = 'block';
+            } else {
+                const correctLetter = String.fromCharCode(65 + q.correct);
+                feedbackDiv.innerHTML = `<div style="color: var(--color-error); font-weight: bold; padding: 10px; background: rgba(231, 76, 60, 0.1); border-radius: 6px; margin-bottom: 15px;">✗ Incorrect. The correct answer is <strong>${correctLetter}: ${q.options[q.correct]}</strong></div>`;
+                feedbackDiv.style.display = 'block';
+            }
+
+            document.getElementById('explanation').classList.add('show');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            renderQuestion();
+        }
+
+        function previousQuestion() {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / filteredQuestions.length) * 100);
+            let message = '';
+            let rating = '';
+
+            if (percentage === 100) {
+                message = 'Perfect Score! Outstanding knowledge!';
+                rating = '⭐⭐⭐⭐⭐';
+            } else if (percentage >= 90) {
+                message = 'Excellent! Remarkable understanding!';
+                rating = '⭐⭐⭐⭐⭐';
+            } else if (percentage >= 80) {
+                message = 'Great! Strong grasp of concepts!';
+                rating = '⭐⭐⭐⭐';
+            } else if (percentage >= 70) {
+                message = 'Good! Solid understanding!';
+                rating = '⭐⭐⭐';
+            } else if (percentage >= 60) {
+                message = 'Fair! Room for improvement!';
+                rating = '⭐⭐';
+            } else {
+                message = 'Keep learning! Review the materials!';
+                rating = '⭐';
+            }
+
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('finalScore').textContent = `${score}/${filteredQuestions.length}`;
+            document.getElementById('scorePercentage').textContent = percentage + '%';
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('performanceRating').textContent = rating;
+            document.getElementById('resultsPanel').classList.add('show');
+        }
+
+        function showAllQuestions() {
+            let html = '<h2 style="margin-bottom: 30px; color: var(--color-primary);">📋 All Questions Bank</h2>';
+            questions.forEach(q => {
+                html += `
+                    <div class="question-card">
+                        <div class="question-title">Q${q.num}. ${q.q}</div>
+                        <div style="margin-left: 20px;">
+                            ${q.options.map((opt, i) => `<div style="margin: 5px 0;"><strong>${String.fromCharCode(65 + i)}:</strong> ${opt}</div>`).join('')}
+                        </div>
+                        <div style="margin-top: 10px; color: var(--color-success);"><strong>Correct: ${String.fromCharCode(65 + q.correct)}</strong></div>
+                        <div style="margin-top: 10px; font-size: 13px; color: var(--color-text-light);">${q.explanation}</div>
+                        <span class="category-tag">${q.category}</span>
+                    </div>
+                `;
+            });
+            document.getElementById('questionsContainer').innerHTML = html;
+        }
+
+        function resetQuiz() {
+            quizStarted = false;
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = [];
+            document.getElementById('categoryFilter').disabled = false;
+            document.getElementById('resultsPanel').classList.remove('show');
+            document.getElementById('currentScore').textContent = '0';
+            filterQuestions();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / filteredQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+        }
+
+        // Initialize
+        filterQuestions();
+    </script>
+</body>
+</html>
