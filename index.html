@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Privacy & Security - 200 Question Assessment</title>
+    <style>
+        :root {
+            --color-primary: #2180a8;
+            --color-primary-hover: #1a6d94;
+            --color-bg: #f5f5f5;
+            --color-surface: #ffffff;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #666;
+            --color-success: #27ae60;
+            --color-error: #e74c3c;
+            --color-warning: #f39c12;
+            --color-border: #ddd;
+            --radius: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1a5d80 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .developer-info {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 12px;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .chapter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            min-width: 250px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .question-container {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--color-text);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: #f0f8ff;
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: #e8f4ff;
+        }
+
+        .option.correct {
+            border-color: var(--color-success);
+            background: #e8f5e9;
+        }
+
+        .option.incorrect {
+            border-color: var(--color-error);
+            background: #ffebee;
+        }
+
+        .option-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .question-type {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--color-warning);
+            color: white;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-top: 15px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            border-left: 4px solid var(--color-success);
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid var(--color-error);
+            color: #c62828;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .nav-button {
+            flex: 1;
+            padding: 12px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: var(--color-primary-hover);
+        }
+
+        .results-panel {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--color-primary);
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin: 20px auto;
+        }
+
+        .score-circle.high {
+            background: linear-gradient(135deg, var(--color-success), #27ae60);
+        }
+
+        .score-circle.medium {
+            background: linear-gradient(135deg, var(--color-warning), #e67e22);
+        }
+
+        .score-circle.low {
+            background: linear-gradient(135deg, var(--color-error), #c0392b);
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .result-stat {
+            text-align: center;
+            padding: 15px;
+            background: var(--color-bg);
+            border-radius: var(--radius);
+        }
+
+        .result-stat-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .result-stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), #1a5d80);
+            transition: width 0.3s ease;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--color-text-secondary);
+            font-size: 13px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .modal-button.primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .modal-button.secondary {
+            background: var(--color-border);
+            color: var(--color-text);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .chapter-select {
+                min-width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 IoT Privacy & Security Assessment</h1>
+            <p>180 Comprehensive Questions on IoT Privacy, Security, and Data Protection </p>
+            <div class="developer-info">
+                <strong>Development:</strong> Ahmad Al-Batayneh
+            </div>
+        </header>
+
+        <div class="controls">
+            <select id="chapterSelect" class="chapter-select">
+                <option value="">-- Select a Chapter --</option>
+            </select>
+            <button class="button" onclick="shuffleQuestions()">🔀 Shuffle</button>
+            <button class="button" onclick="resetQuiz()">↻ Reset</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Current Question</div>
+                <div class="stat-value"><span id="currentQuestion">0</span> / <span id="totalQuestions">180</span></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Correct Answers </div>
+                <div class="stat-value" id="correctCount">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Progress</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container" id="questionContainer">
+            <div style="text-align: center; color: #999; padding: 40px;">
+                <p>Select a chapter to begin the assessment</p>
+            </div>
+        </div>
+
+        <div class="results-panel" id="resultsPanel">
+            <div class="results-title">Assessment Complete! 🎓</div>
+            <div class="score-circle" id="scoreCircle">0%</div>
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-stat-label">Correct كفووو</div>
+                    <div class="result-stat-value" id="resultCorrect">0</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-stat-label">Incorrect ليششش!!</div>
+                    <div class="result-stat-value" id="resultIncorrect">0</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-stat-label"> Score %</div>
+                    <div class="result-stat-value" id="resultScore">0%</div>
+                </div>
+            </div>
+            <button class="button" style="width: 100%; margin-top: 20px;" onclick="resetQuiz()">Start Over</button>
+        </div>
+
+        <div class="navigation" id="navigationButtons" style="display: none;">
+            <button class="nav-button" id="prevBtn" onclick="previousQuestion()" disabled>← Previous</button>
+            <button class="nav-button" id="nextBtn" onclick="nextQuestion()">Next →</button>
+        </div>
+
+        <footer>
+            <p><strong>Course:</strong> IOT 457 - IoT Privacy | <strong>Development:</strong>Ahmad Al-Batayneh</p>
+            <p>© 2025 - Study Material for IoT Security Professionals</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data - 200 Total Questions (Ch1: 50, Ch2: 50, Ch3: 50, Ch4: 50)
+        const questionsData = {
+            "Chapter 1: IoT Fundamentals & Privacy Basics": [
+                {"id": 1, "question": "What does IoT stand for?", "options": {"A": "Internet of Threats", "B": "Internet of Things", "C": "Internet of Technology", "D": "Internet of Transmission"}, "correct": "B", "type": "definition"},
+                {"id": 2, "question": "What is the main privacy concern with smart home devices?", "options": {"A": "They are too expensive", "B": "They collect excessive amounts of personal information without clear justification", "C": "They consume too much electricity", "D": "They require frequent software updates"}, "correct": "B", "type": "understanding"},
+                {"id": 3, "question": "What does 'unlinkability' mean in the context of IoT privacy?", "options": {"A": "Different pieces of personal data cannot be connected to reveal a single person's identity", "B": "Breaking network connections between devices", "C": "Devices cannot link to the internet", "D": "Breaking the link between manufacturer and user"}, "correct": "A", "type": "definition"},
+                {"id": 4, "question": "How does privacy differ from security in IoT systems?", "options": {"A": "They are the same concept", "B": "Privacy is only for personal devices", "C": "Security protects data from unauthorized access; privacy is about appropriate use, consent, and control", "D": "Security has no role in IoT systems"}, "correct": "C", "type": "understanding"},
+                {"id": 5, "question": "Which of the following is NOT a privacy concern mentioned in IoT systems?", "options": {"A": "Identity theft from leaked data", "B": "Surveillance through device tracking", "C": "Device color preferences", "D": "Discrimination from algorithmic profiling"}, "correct": "C", "type": "understanding"},
+                {"id": 6, "question": "What is the primary advantage of 'privacy by design' in IoT?", "options": {"A": "It embeds privacy protections from the start of development", "B": "It makes devices more expensive", "C": "It requires users to manually configure everything", "D": "It eliminates the need for encryption"}, "correct": "A", "type": "understanding"},
+                {"id": 7, "question": "Which IoT devices generate the most continuous personal data?", "options": {"A": "Smart refrigerators only", "B": "Only stationary devices", "C": "Wearables, smart home devices, and industrial sensors", "D": "Only network infrastructure"}, "correct": "C", "type": "understanding"},
+                {"id": 8, "question": "What does data minimization principle require in IoT systems?", "options": {"A": "Minimize the number of users accessing data", "B": "Collect all possible data for future use", "C": "Collect only adequate, relevant data necessary for stated purposes", "D": "Never collect any personal data"}, "correct": "C", "type": "definition"},
+                {"id": 9, "question": "Which privacy-preserving technique minimizes raw data transmission in IoT?", "options": {"A": "Edge/fog processing to keep data local", "B": "Cloud storage of all data", "C": "Sending all data to third parties", "D": "Removing encryption from devices"}, "correct": "A", "type": "understanding"},
+                {"id": 10, "question": "What is a key challenge in implementing privacy in resource-constrained IoT devices?", "options": {"A": "Too much processing power available", "B": "Limited cryptographic options due to power/memory constraints", "C": "Too many security standards to follow", "D": "Lack of user interest in privacy"}, "correct": "B", "type": "understanding"},
+                {"id": 11, "question": "How many layers does the standard IoT architecture have?", "options": {"A": "Two layers", "B": "Five layers", "C": "Four layers", "D": "Three layers"}, "correct": "C", "type": "definition"},
+                {"id": 12, "question": "What is the primary function of the Perception Layer?", "options": {"A": "Store data in the cloud", "B": "Deliver results to end users", "C": "Collect and gather information through sensors, RFID, and cameras", "D": "Process data using AI algorithms"}, "correct": "C", "type": "definition"},
+                {"id": 13, "question": "Which layer handles data transmission between devices and cloud infrastructure?", "options": {"A": "Perception layer", "B": "Transport/Transmission layer", "C": "Processing layer", "D": "Application layer"}, "correct": "B", "type": "definition"},
+                {"id": 14, "question": "What does the Processing Layer use to transform sensor data into insights?", "options": {"A": "Only manual calculations", "B": "Cloud computing, AI, parallel computing, and data mining", "C": "Simple spreadsheet operations", "D": "Mechanical processing only"}, "correct": "B", "type": "understanding"},
+                {"id": 15, "question": "Which IoT layer establishes business models and runs application services?", "options": {"A": "Perception layer", "B": "Transport layer", "C": "Application layer", "D": "Processing layer"}, "correct": "C", "type": "definition"},
+                {"id": 16, "question": "What communication protocols are used in the Transport Layer?", "options": {"A": "Only Wi-Fi", "B": "Wi-Fi, 5G, Bluetooth, LoRa, satellite networks", "C": "Only 5G", "D": "Only Bluetooth"}, "correct": "B", "type": "understanding"},
+                {"id": 17, "question": "How do threats propagate across IoT layers?", "options": {"A": "They only affect the layer where they start", "B": "Threats cannot cross layer boundaries", "C": "Threats in lower layers propagate upward to higher layers", "D": "They move randomly between layers"}, "correct": "C", "type": "understanding"},
+                {"id": 18, "question": "Which of these is an example of threat propagation across layers?", "options": {"A": "User accidentally enters wrong password", "B": "Compromised sensor → altered transmission → corrupted analytics → incorrect output", "C": "Device runs out of battery", "D": "Network experiences high latency"}, "correct": "B", "type": "understanding"},
+                {"id": 19, "question": "What is RFID?", "options": {"A": "Rapid Frequency Identification", "B": "Real-time Feedback Identification", "C": "Radio Frequency Identification", "D": "Remote Function Integration Device"}, "correct": "C", "type": "definition"},
+                {"id": 20, "question": "What is the main privacy threat in RFID technology?", "options": {"A": "Unauthorized reading of tags exposing personal information without consent", "B": "RFID tags consume too much power", "C": "RFID tags are too visible", "D": "RFID technology is too expensive"}, "correct": "A", "type": "understanding"},
+                {"id": 21, "question": "What security threat occurs when an attacker physically compromises a sensor node?", "options": {"A": "Eavesdropping attack", "B": "Sensor Node Capture - allowing data tampering and falsification", "C": "Denial of Service", "D": "Network flooding"}, "correct": "B", "type": "definition"},
+                {"id": 22, "question": "How can location privacy be compromised through RFID?", "options": {"A": "RFID tags broadcast too loudly", "B": "RFID readers can automatically track tag users in public spaces", "C": "RFID tags require internet connection", "D": "Location data is stored in clear text"}, "correct": "B", "type": "understanding"},
+                {"id": 23, "question": "What is a fake sensor attack?", "options": {"A": "Using outdated sensors", "B": "Insertion of malicious devices into the IoT system", "C": "Sensors providing inaccurate readings", "D": "Sensors that malfunction after installation"}, "correct": "B", "type": "definition"},
+                {"id": 24, "question": "Which lightweight cryptography algorithm is recommended for perception layer devices?", "options": {"A": "Only RSA", "B": "AES and ECC for resource-constrained devices", "C": "Only DES", "D": "No encryption needed"}, "correct": "B", "type": "understanding"},
+                {"id": 25, "question": "What is the purpose of RFID authentication protocols?", "options": {"A": "To make RFID faster", "B": "To prevent unauthorized tag cloning and reading", "C": "To increase RFID transmission range", "D": "To reduce power consumption"}, "correct": "B", "type": "understanding"},
+                {"id": 26, "question": "How does sensor network security differ from single sensor security?", "options": {"A": "Sensor networks don't need security", "B": "Only the central server needs protection", "C": "Must protect entire data acquisition, transmission, processing, and application pipeline", "D": "Security only applies to wireless transmission"}, "correct": "C", "type": "understanding"},
+                {"id": 27, "question": "What type of attack overwhelms network resources to cause downtime?", "options": {"A": "Eavesdropping attack", "B": "DDoS attack", "C": "Phishing attack", "D": "Man-in-the-middle attack"}, "correct": "B", "type": "definition"},
+                {"id": 28, "question": "What is the difference between DoS and DDoS attacks?", "options": {"A": "DoS is faster than DDoS", "B": "DoS comes from one source; DDoS comes from multiple compromised nodes", "C": "DDoS only affects wireless networks", "D": "They are the same attack with different names"}, "correct": "B", "type": "understanding"},
+                {"id": 29, "question": "What is a wormhole attack?", "options": {"A": "An attack that creates physical holes", "B": "Attacker captures data at one location and retransmits it from another location", "C": "Attack that only affects wired networks", "D": "Attack that prevents all communication"}, "correct": "B", "type": "definition"},
+                {"id": 30, "question": "What is a routing attack in IoT networks?", "options": {"A": "Blocking all network traffic", "B": "Manipulation of routing paths for data interception or misdirection", "C": "Installing new network routes", "D": "Increasing data transmission speed"}, "correct": "B", "type": "definition"},
+                {"id": 31, "question": "How does traffic analysis threaten IoT security?", "options": {"A": "By slowing down data transmission", "B": "By monitoring packet flow patterns to detect behavior and infer user activities", "C": "By encrypting all data", "D": "By increasing network bandwidth"}, "correct": "B", "type": "understanding"},
+                {"id": 32, "question": "What is spoofing in network security?", "options": {"A": "Sending data faster than normal", "B": "Forging MAC/IP addresses to impersonate legitimate devices", "C": "Encrypting network traffic", "D": "Backing up network data"}, "correct": "B", "type": "definition"},
+                {"id": 33, "question": "What is a replay attack?", "options": {"A": "Watching network traffic repeatedly", "B": "Resending previously captured packets to disrupt communication or gain unauthorized access", "C": "Replaying a video over the network", "D": "Recording network activity for later analysis"}, "correct": "B", "type": "definition"},
+                {"id": 34, "question": "Which transport layer countermeasure prevents eavesdropping?", "options": {"A": "Increasing network speed", "B": "End-to-end encryption of transmitted data", "C": "Using only public networks", "D": "Removing all security measures"}, "correct": "B", "type": "understanding"},
+                {"id": 35, "question": "What is the role of an Intrusion Detection System (IDS)?", "options": {"A": "It encrypts all data", "B": "It detects anomalies and potential attacks in network traffic", "C": "It increases bandwidth allocation", "D": "It manually monitors every packet"}, "correct": "B", "type": "understanding"},
+                {"id": 36, "question": "What is the primary function of the processing layer?", "options": {"A": "Only store raw data", "B": "Compute, analyze, and process data via cloud or edge computing", "C": "Only transmit data between devices", "D": "Display results to users only"}, "correct": "B", "type": "definition"},
+                {"id": 37, "question": "What threat involves unauthorized extraction of user behavior patterns?", "options": {"A": "Data Mining Exploitation", "B": "Eavesdropping", "C": "Network flooding", "D": "Location spoofing"}, "correct": "A", "type": "definition"},
+                {"id": 38, "question": "What is homomorphic encryption used for?", "options": {"A": "Storing unencrypted data", "B": "Secure computation on encrypted data without decryption", "C": "Only encrypting text messages", "D": "Transmitting data faster"}, "correct": "B", "type": "definition"},
+                {"id": 39, "question": "What is differential privacy?", "options": {"A": "Different passwords for different users", "B": "Mathematical technique to anonymize data while preserving aggregate statistics", "C": "Privacy only for certain users", "D": "Removing all user identifiers"}, "correct": "B", "type": "definition"},
+                {"id": 40, "question": "What does Secure Multi-Party Computation (SMPC) enable?", "options": {"A": "Only one party can access data", "B": "Multiple parties compute together while keeping individual data private", "C": "Sharing all data with all parties", "D": "Computing without any parties"}, "correct": "B", "type": "definition"},
+                {"id": 41, "question": "What is the primary function of the Application Layer?", "options": {"A": "Only raw sensor data", "B": "Intelligent services to end users (healthcare, smart homes, automation)", "C": "Only network infrastructure", "D": "Only encryption protocols"}, "correct": "B", "type": "definition"},
+                {"id": 42, "question": "What is weak authentication threat in the application layer?", "options": {"A": "Strong passwords that users forget", "B": "Poor access controls leading to account compromise", "C": "Using multi-factor authentication", "D": "Requiring users to authenticate"}, "correct": "B", "type": "definition"},
+                {"id": 43, "question": "How can malware be injected into IoT applications?", "options": {"A": "Through user feedback", "B": "Exploiting insecure APIs or vulnerable update mechanisms", "C": "By upgrading the firmware", "D": "Through official app stores only"}, "correct": "B", "type": "understanding"},
+                {"id": 44, "question": "What is data misuse in application layer security?", "options": {"A": "Users not understanding data collection", "B": "Unauthorized sharing or resale of user data without consent", "C": "Data being stored in databases", "D": "Data being encrypted too much"}, "correct": "B", "type": "definition"},
+                {"id": 45, "question": "What threat involves manipulation of control commands?", "options": {"A": "Data theft", "B": "Service Disruption - altering critical control commands", "C": "User complaints", "D": "Network latency"}, "correct": "B", "type": "definition"},
+                {"id": 46, "question": "What is regulatory non-compliance threat?", "options": {"A": "Too much compliance overhead", "B": "Violations of data protection laws like GDPR or HIPAA", "C": "Following regulations too strictly", "D": "Users requesting compliance"}, "correct": "B", "type": "understanding"},
+                {"id": 47, "question": "What is a man-in-the-middle (MITM) attack?", "options": {"A": "Attack on middle management", "B": "Attacker intercepts communication between two parties to eavesdrop or modify data", "C": "Communication at the middle of the day", "D": "Attack only on wireless devices"}, "correct": "B", "type": "definition"},
+                {"id": 48, "question": "What is packet sniffing?", "options": {"A": "Detecting bad smells in data", "B": "Capturing and analyzing network packets for unauthorized access to information", "C": "Sniffing sounds over network", "D": "Packet inspection without capturing data"}, "correct": "B", "type": "definition"},
+                {"id": 49, "question": "What is privilege escalation?", "options": {"A": "Promoting staff in organizational hierarchy", "B": "Gaining higher access rights than originally granted to a user or process", "C": "Removing user privileges", "D": "Elevator access control systems"}, "correct": "B", "type": "definition"},
+                {"id": 50, "question": "What is a social engineering attack?", "options": {"A": "Engineering social networks", "B": "Manipulating people into divulging confidential information or performing actions", "C": "Teaching social skills to hackers", "D": "Social media marketing attacks"}, "correct": "B", "type": "definition"},
+            ],
+            "Chapter 2: Data Protection & Regulations": [
+                {"id": 51, "question": "What does GDPR stand for?", "options": {"A": "General Data Response Regulation", "B": "General Data Protection Regulation", "C": "Global Data Privacy Rules", "D": "Government Data Processing Regulation"}, "correct": "B", "type": "definition"},
+                {"id": 58, "question": "Which of these is a core GDPR principle?", "options": {"A": "Collect all possible data", "B": "Lawfulness, fairness, and transparency", "C": "Never inform users about data collection", "D": "Store data indefinitely"}, "correct": "B", "type": "understanding"},
+                {"id": 59, "question": "What is the purpose limitation principle?", "options": {"A": "Limit the number of users", "B": "Data should only be used for specified purposes and not repurposed without consent", "C": "Limit how often data is collected", "D": "Limit data storage to servers only"}, "correct": "B", "type": "definition"},
+                {"id": 60, "question": "What does data minimization mean?", "options": {"A": "Reducing server costs", "B": "Collecting adequate, relevant data limited to necessary purposes", "C": "Not collecting any data", "D": "Keeping data in minimal storage"}, "correct": "B", "type": "definition"},
+                {"id": 61, "question": "What is the accuracy principle in data protection?", "options": {"A": "Rounding numbers to nearest whole number", "B": "Keeping personal data accurate and up-to-date; correcting inaccurate data", "C": "Data doesn't need to be correct", "D": "Only keeping data that is approximately correct"}, "correct": "B", "type": "definition"},
+                {"id": 62, "question": "What is storage limitation principle?", "options": {"A": "Store all data forever", "B": "Keep data only as long as necessary; establish erasure time limits", "C": "Never store personal data", "D": "Store data in single location only"}, "correct": "B", "type": "definition"},
+                {"id": 63, "question": "What does accountability principle require?", "options": {"A": "Blaming users for data breaches", "B": "Controllers must demonstrate compliance with data protection regulations", "C": "No responsibility for data protection", "D": "Only administrators are accountable"}, "correct": "B", "type": "definition"},
+                {"id": 64, "question": "What is the CIA Triad in data protection?", "options": {"A": "Central Intelligence Agency guidelines", "B": "Confidentiality, Integrity, Availability", "C": "Cyber Intelligence Assessment", "D": "Cryptographic Input Authentication"}, "correct": "B", "type": "definition"},
+                {"id": 65, "question": "What does Confidentiality in CIA ensure?", "options": {"A": "Data is available anytime", "B": "Only authorized entities can access data", "C": "Data cannot be modified", "D": "All users can see all data"}, "correct": "B", "type": "understanding"},
+                {"id": 66, "question": "What does Integrity in CIA ensure?", "options": {"A": "Data is publicly available", "B": "Data accuracy and consistency; detection of unauthorized modifications", "C": "Data is encrypted", "D": "Data is backed up regularly"}, "correct": "B", "type": "understanding"},
+                {"id": 67, "question": "What does CCPA stand for?", "options": {"A": "California Consumer Privacy Act", "B": "Computer and Communication Privacy Agreement", "C": "Cyber Crime Prevention Act", "D": "Centralized Data Protection Protocol"}, "correct": "A", "type": "definition"},
+                {"id": 68, "question": "What consumer rights does CCPA provide?", "options": {"A": "No rights to personal data", "B": "Right to know, delete, and opt out of data sales", "C": "Only companies have rights", "D": "Right to sell their data freely"}, "correct": "B", "type": "understanding"},
+                {"id": 69, "question": "What does the Jordanian Cybercrime Law (2023) primarily protect?", "options": {"A": "Only government data", "B": "National and personal data assets", "C": "Only business data", "D": "Internet speed only"}, "correct": "B", "type": "understanding"},
+                {"id": 70, "question": "What is a Data Protection Impact Assessment (DPIA)?", "options": {"A": "A marketing assessment", "B": "Systematic evaluation of privacy and security risks before data processing", "C": "A user satisfaction survey", "D": "A financial assessment"}, "correct": "B", "type": "definition"},
+                {"id": 71, "question": "Which regulation emphasizes 'privacy by design'?", "options": {"A": "ISO standards only", "B": "GDPR", "C": "Marketing regulations", "D": "Hardware specifications"}, "correct": "B", "type": "understanding"},
+                {"id": 72, "question": "What does privacy by design mean?", "options": {"A": "Adding privacy features after development", "B": "Embedding privacy protections from the initial design phase", "C": "Privacy is optional in products", "D": "Only technical teams consider privacy"}, "correct": "B", "type": "definition"},
+                {"id": 73, "question": "What is the scope of GDPR?", "options": {"A": "Only USA companies", "B": "Organizations processing EU residents' data", "C": "Only European companies", "D": "Only government agencies"}, "correct": "B", "type": "understanding"},
+                {"id": 74, "question": "What rights do data subjects have under GDPR?", "options": {"A": "No rights to their data", "B": "Access, rectification, erasure, and portability rights", "C": "Only read-only access", "D": "Only companies have rights"}, "correct": "B", "type": "understanding"},
+                {"id": 75, "question": "What is end-to-end encryption?", "options": {"A": "Encryption only at network endpoints", "B": "Data encrypted from sender to recipient; intermediate systems cannot read it", "C": "Encryption at the end of each month", "D": "Encryption only for last packet"}, "correct": "B", "type": "definition"},
+                {"id": 76, "question": "What is k-anonymity?", "options": {"A": "Using k passwords", "B": "Making individual indistinguishable from k-1 others (limited protection)", "C": "Dividing data into k parts", "D": "Using k encryption keys"}, "correct": "B", "type": "definition"},
+                {"id": 77, "question": "What does differential privacy add to data?", "options": {"A": "Different encryption for different users", "B": "Controlled noise to protect individual privacy while preserving aggregate statistics", "C": "Different access controls for different data", "D": "Multiple privacy layers"}, "correct": "B", "type": "definition"},
+                {"id": 78, "question": "What is attribute-based encryption (ABE)?", "options": {"A": "Encryption based on user attributes only", "B": "Encryption based on subject/object attributes enabling fine-grained access control", "C": "Encryption based on encryption keys", "D": "Encryption that removes attributes"}, "correct": "B", "type": "definition"},
+                {"id": 79, "question": "What is access control?", "options": {"A": "Controlling network access only", "B": "System of monitoring and controlling who accesses data and resources", "C": "Giving everyone equal access", "D": "Controlling physical building access"}, "correct": "B", "type": "definition"},
+                {"id": 80, "question": "What is RBAC (Role-Based Access Control)?", "options": {"A": "Access based on individual user decisions", "B": "Administrators manually assign roles and access permissions", "C": "Random access distribution", "D": "Access based on alphabetical names"}, "correct": "B", "type": "definition"},
+                {"id": 81, "question": "What is ABAC (Attribute-Based Access Control)?", "options": {"A": "Same as RBAC", "B": "Access decisions based on attributes of subject, object, permission, and environment", "C": "Always allowing all access", "D": "Denying all access by default"}, "correct": "B", "type": "definition"},
+                {"id": 82, "question": "How does ABAC differ from RBAC?", "options": {"A": "ABAC is older than RBAC", "B": "ABAC uses existing attributes; RBAC requires manual role assignment", "C": "They are identical", "D": "RBAC uses attributes; ABAC uses roles"}, "correct": "B", "type": "understanding"},
+                {"id": 83, "question": "What advantages does ABAC provide?", "options": {"A": "Only works for small systems", "B": "Fine-grained control in large, dynamic environments; flexible policies", "C": "Requires manual configuration for each user", "D": "Less secure than RBAC"}, "correct": "B", "type": "understanding"},
+                {"id": 84, "question": "What is lightweight cryptography?", "options": {"A": "Cryptography that's easy to crack", "B": "Cryptographic algorithms optimized for resource-constrained devices", "C": "Cryptography using light transmission", "D": "Cryptography that uses less storage space"}, "correct": "B", "type": "definition"},
+                {"id": 85, "question": "What is the primary purpose of Privacy Impact Assessment?", "options": {"A": "Marketing purpose", "B": "Identify risks, ensure compliance, document privacy considerations", "C": "Only for large companies", "D": "PIAs cannot prevent privacy issues"}, "correct": "B", "type": "understanding"},
+                {"id": 86, "question": "What protections should be in place for IoT data at rest?", "options": {"A": "No protection needed", "B": "Full-disk encryption, database encryption, secure storage media", "C": "Only username/password protection", "D": "Data at rest doesn't need protection"}, "correct": "B", "type": "understanding"},
+                {"id": 87, "question": "What does HIPAA protect?", "options": {"A": "Patient privacy in healthcare systems", "B": "Only financial records", "C": "Only hospital buildings", "D": "Insurance company profits"}, "correct": "A", "type": "understanding"},
+                {"id": 88, "question": "What does PCI DSS protect?", "options": {"A": "Personal Computer Information", "B": "Payment Card Industry Data Security Standard", "C": "Public Card Information Standard", "D": "Personal Cybersecurity Information"}, "correct": "B", "type": "definition"},
+                {"id": 89, "question": "What is ISO 27001?", "options": {"A": "International Organization standard for information security", "B": "International Organization for Standardization - Information Security Management", "C": "Internet Security Operations standard", "D": "Internet Standards Organization number"}, "correct": "B", "type": "definition"},
+                {"id": 90, "question": "What are lawful bases for processing under GDPR?", "options": {"A": "Data processing has no legal requirements", "B": "Consent, contract, legal obligation, vital interests, public task, legitimate interests", "C": "Only consent is valid", "D": "Companies can process data freely"}, "correct": "B", "type": "understanding"},
+                {"id": 91, "question": "What is the right to be forgotten under GDPR?", "options": {"A": "Users can ignore data requests", "B": "Right to have personal data erased under certain conditions", "C": "Forgetting passwords", "D": "Users have no data rights"}, "correct": "B", "type": "definition"},
+                {"id": 92, "question": "What is data portability?", "options": {"A": "Moving data between physical locations", "B": "Right to obtain and reuse personal data in portable format", "C": "Portable devices storing data", "D": "Data cannot be transferred"}, "correct": "B", "type": "definition"},
+                {"id": 93, "question": "What is the role of a Data Protection Officer (DPO)?", "options": {"A": "Only guards physical data", "B": "Oversees GDPR compliance, privacy policies, and data subject requests", "C": "Manages user passwords", "D": "Only handles security breaches"}, "correct": "B", "type": "understanding"},
+                {"id": 94, "question": "What is a Data Controller?", "options": {"A": "Controls internet traffic", "B": "Entity determining purposes and means of personal data processing", "C": "Device controlling data", "D": "Controller of user access only"}, "correct": "B", "type": "definition"},
+                {"id": 95, "question": "What is a Data Processor?", "options": {"A": "Computer processing data", "B": "Entity processing personal data on behalf of a controller", "C": "Processor of payment data", "D": "User processing information"}, "correct": "B", "type": "definition"},
+                {"id": 96, "question": "What is the right to rectification?", "options": {"A": "Right to correct inaccurate personal data", "B": "Right to reject all data", "C": "Right to modify system settings", "D": "Right to refuse data collection"}, "correct": "A", "type": "definition"},
+                {"id": 97, "question": "What is phishing?", "options": {"A": "Actual fishing for data in rivers", "B": "Deceiving users into providing credentials via fake communications like emails", "C": "Fishing industry cybersecurity", "D": "Fishing for compliments online"}, "correct": "B", "type": "definition"},
+                {"id": 98, "question": "What is NIST Cybersecurity Framework?", "options": {"A": "Network Internet Security Team", "B": "Guidelines for managing cybersecurity risk and best practices", "C": "National security framework", "D": "Internet security framework"}, "correct": "B", "type": "definition"},
+                {"id": 99, "question": "What is SOC 2 compliance?", "options": {"A": "Security Operations Center only", "B": "Service Organization Control - audits of security, availability, and confidentiality", "C": "System Operation Compliance", "D": "Secure Operation Certification"}, "correct": "B", "type": "definition"},
+                {"id": 100, "question": "What is data residency requirement?", "options": {"A": "Data staying resident on devices", "B": "Personal data must remain within specific geographic boundaries", "C": "Resident data storage", "D": "Data stored on permanent devices"}, "correct": "B", "type": "definition"},
+            ],
+            "Chapter 3: Threats, Attacks & Vulnerabilities": [
+                {"id": 101, "question": "What is a Sybil attack?", "options": {"A": "An attack with loud noise", "B": "Single attacker creating multiple false identities to control network", "C": "Attack on symbols only", "D": "Attack on backup systems"}, "correct": "B", "type": "definition"},
+                {"id": 131, "question": "What is a Byzantine failure?", "options": {"A": "System failure in Byzantine era", "B": "Nodes behave unpredictably/maliciously, preventing consensus", "C": "Network disconnection", "D": "Server power failure"}, "correct": "B", "type": "definition"},
+                {"id": 132, "question": "What is incomplete data deletion threat?", "options": {"A": "Forgetting to delete files", "B": "Data remnants recoverable after deletion, compromising privacy", "C": "Partial file uploads", "D": "Incomplete downloads"}, "correct": "B", "type": "understanding"},
+                {"id": 133, "question": "What is a botnet?", "options": {"A": "A helpful robot assistant", "B": "Network of infected computers controlled by attackers", "C": "A bot that prevents network access", "D": "Robot network for manufacturing"}, "correct": "B", "type": "definition"},
+                {"id": 134, "question": "What is ransomware?", "options": {"A": "Random software installation", "B": "Malware encrypting data and demanding payment for decryption key", "C": "Software that randomly deletes files", "D": "Software that prevents range limitations"}, "correct": "B", "type": "definition"},
+                {"id": 135, "question": "What is zero-day vulnerability?", "options": {"A": "Vulnerability that never occurs", "B": "Unknown security flaw exploited before vendor discovers it", "C": "Day when zero security measures exist", "D": "Vulnerability on day zero of project"}, "correct": "B", "type": "definition"},
+                {"id": 136, "question": "What is supply chain attack?", "options": {"A": "Attack on store supply", "B": "Compromising software/hardware at source, affecting all downstream users", "C": "Attack on delivery trucks", "D": "Attack on inventory management"}, "correct": "B", "type": "understanding"},
+                {"id": 137, "question": "What emerging technology helps secure IoT?", "options": {"A": "Blockchain only", "B": "Blockchain, AI-based anomaly detection, edge computing", "C": "No technology helps", "D": "Only traditional encryption"}, "correct": "B", "type": "understanding"},
+                {"id": 138, "question": "What does secure data access ensure?", "options": {"A": "All users access all data", "B": "Only authorized users access specific data for legitimate purposes", "C": "No users access data", "D": "Users access data without authentication"}, "correct": "B", "type": "definition"},
+                {"id": 139, "question": "What are data access logs used for?", "options": {"A": "Just record keeping", "B": "Auditing, accountability, detecting unauthorized access", "C": "Slowing down data access", "D": "Preventing any access"}, "correct": "B", "type": "understanding"},
+                {"id": 140, "question": "What is the principle of least privilege?", "options": {"A": "Give users maximum access", "B": "Users granted only minimum access needed for their role", "C": "Privileges based on random selection", "D": "All privileges equally distributed"}, "correct": "B", "type": "definition"},
+                {"id": 141, "question": "What is data classification?", "options": {"A": "Categorizing by data owner", "B": "Categorizing data by sensitivity enabling appropriate protection levels", "C": "Classifying users only", "D": "Removing data classifications"}, "correct": "B", "type": "understanding"},
+                {"id": 142, "question": "What is data masking/anonymization?", "options": {"A": "Covering data with a mask", "B": "Hiding personally identifiable information while preserving data utility", "C": "Deleting all user data", "D": "Encrypting file names only"}, "correct": "B", "type": "definition"},
+                {"id": 143, "question": "What should be included in an acceptable use policy?", "options": {"A": "No restrictions on data use", "B": "Guidelines for proper data handling, authorized uses, and violations", "C": "Only what's forbidden", "D": "Policies that are unclear"}, "correct": "B", "type": "understanding"},
+                {"id": 144, "question": "What is HIPAA?", "options": {"A": "Health Insurance Portability and Accountability Act", "B": "Health Insurance Portability and Accountability Act - protects patient privacy", "C": "High Intensity Privacy Act", "D": "Healthcare Information Protection Agency"}, "correct": "B", "type": "definition"},
+                {"id": 145, "question": "What does PCI DSS protect?", "options": {"A": "Personal Computer Information", "B": "Payment Card Industry Data Security Standard", "C": "Public Card Information Standard", "D": "Personal Cybersecurity Information"}, "correct": "B", "type": "definition"},
+                {"id": 146, "question": "What is ISO 27001?", "options": {"A": "International Organization standard for information security", "B": "International Organization for Standardization - Information Security Management", "C": "Internet Security Operations standard", "D": "Internet Standards Organization number"}, "correct": "B", "type": "definition"},
+                {"id": 147, "question": "What does compliance audit verify?", "options": {"A": "Only financial records", "B": "Adherence to regulations and standards; security control effectiveness", "C": "User satisfaction only", "D": "System speed only"}, "correct": "B", "type": "understanding"},
+                {"id": 148, "question": "What is a service level agreement (SLA)?", "options": {"A": "Simple Legal Agreement", "B": "Contract specifying service guarantees, uptime, support, and penalties", "C": "Service List Agreement", "D": "Service Level Allowance"}, "correct": "B", "type": "definition"},
+                {"id": 149, "question": "Why is certification important for IoT products?", "options": {"A": "It's just marketing", "B": "Demonstrates compliance with security and privacy standards", "C": "Certification has no meaning", "D": "Only for premium products"}, "correct": "B", "type": "understanding"},
+                {"id": 150, "question": "What is the role of a Data Protection Officer (DPO)?", "options": {"A": "Only guards physical data", "B": "Oversees GDPR compliance, privacy policies, and data subject requests", "C": "Manages user passwords", "D": "Only handles security breaches"}, "correct": "B", "type": "understanding"},
+                {"id": 151, "question": "What is risk identification?", "options": {"A": "Preventing all risks", "B": "Systematically discovering and documenting potential threats and vulnerabilities", "C": "Ignoring potential problems", "D": "Only fixing known risks"}, "correct": "B", "type": "definition"},
+                {"id": 152, "question": "What is risk assessment?", "options": {"A": "Asking users about risks", "B": "Evaluating probability and impact of identified risks", "C": "Assuming no risks exist", "D": "Only assessing financial risks"}, "correct": "B", "type": "definition"},
+                {"id": 150, "question": "What is risk mitigation?", "options": {"A": "Ignoring risks", "B": "Implementing controls to reduce likelihood or impact of risks", "C": "Transferring all responsibility", "D": "Accepting all risks"}, "correct": "B", "type": "definition"},
+                {"id": 151, "question": "What is a Distributed Denial of Service (DDoS)?", "options": {"A": "Distributing data across servers", "B": "Attack using multiple compromised computers overwhelming a target", "C": "Distributing services", "D": "Service distribution system"}, "correct": "B", "type": "definition"},
+                {"id": 152, "question": "What is SQL injection?", "options": {"A": "Injecting SQL vaccines", "B": "Inserting malicious SQL code to manipulate database queries", "C": "SQL data injection", "D": "Database backup method"}, "correct": "B", "type": "definition"},
+                {"id": 153, "question": "What is cross-site scripting (XSS)?", "options": {"A": "Multiple website navigation", "B": "Injecting malicious scripts into web pages viewed by other users", "C": "Website formatting", "D": "CSS styling attacks"}, "correct": "B", "type": "definition"},
+                {"id": 154, "question": "What is cross-site request forgery (CSRF)?", "options": {"A": "Forging website copies", "B": "Tricking users into making unwanted requests to a website where they're authenticated", "C": "Copying websites", "D": "Website request logging"}, "correct": "B", "type": "definition"},
+                {"id": 155, "question": "What is a firmware vulnerability?", "options": {"A": "Outdated firmware only", "B": "Security flaws in device firmware allowing unauthorized access or control", "C": "Firmware installation", "D": "Firmware backup"}, "correct": "B", "type": "definition"},
+                {"id": 156, "question": "What is weak password management?", "options": {"A": "Users choosing weak passwords", "B": "Failure to enforce strong passwords, complexity requirements, and regular changes", "C": "Password management tools", "D": "Password encryption"}, "correct": "B", "type": "definition"},
+                {"id": 157, "question": "What is API vulnerability?", "options": {"A": "Application Performance Interface issue", "B": "Security flaws in APIs allowing unauthorized data access or injection attacks", "C": "API design flaw", "D": "API performance issue"}, "correct": "B", "type": "definition"},
+                {"id": 158, "question": "What is insecure deserialization?", "options": {"A": "Removing series from data", "B": "Deserializing untrusted data leading to code injection or denial of service", "C": "Data series formatting", "D": "Serialization process"}, "correct": "B", "type": "definition"},
+                {"id": 159, "question": "What is improper error handling?", "options": {"A": "Making errors", "B": "Revealing sensitive information through verbose error messages", "C": "Error prevention", "D": "Error logging"}, "correct": "B", "type": "definition"},
+            ],
+            "Chapter 4: Best Practices & Implementation": [
+                {"id": 160, "question": "What is the first step in privacy-aware IoT development?", "options": {"A": "Adding encryption at the end", "B": "Data minimization - collect only necessary data for stated purposes", "C": "Collecting all possible data", "D": "Asking users for permission to collect data"}, "correct": "B", "type": "understanding"},
+                {"id": 98, "question": "What should developers do regarding cryptographic libraries?", "options": {"A": "Create custom crypto from scratch", "B": "Use proven, established crypto libraries with security audits", "C": "Avoid using encryption", "D": "Use the simplest possible encryption"}, "correct": "B", "type": "understanding"},
+                {"id": 99, "question": "How should IoT systems handle software updates?", "options": {"A": "Never update software", "B": "Use secure update channels; avoid man-in-the-middle attacks", "C": "Push updates through any available network", "D": "Keep old versions installed"}, "correct": "B", "type": "understanding"},
+                {"id": 100, "question": "What makes a privacy UI effective in IoT applications?", "options": {"A": "Complex technical jargon", "B": "Clear, transparent explanations users understand; meaningful consent flows", "C": "No user interface at all", "D": "Hiding privacy settings from users"}, "correct": "B", "type": "understanding"},
+                {"id": 101, "question": "Why is Privacy Impact Assessment important?", "options": {"A": "It's just paperwork", "B": "Identifies risks, ensures compliance, documents privacy considerations", "C": "It's not necessary", "D": "Only for large companies"}, "correct": "B", "type": "understanding"},
+                {"id": 102, "question": "What should logging and auditability systems track?", "options": {"A": "Nothing - less logging is better", "B": "Data access, modifications, and system events for accountability", "C": "Only user passwords", "D": "Only successful operations"}, "correct": "B", "type": "understanding"},
+                {"id": 103, "question": "How should developers handle user consent?", "options": {"A": "Assume all users consent", "B": "Obtain explicit, informed, freely given consent; easy revocation", "C": "Collect consent once for all uses", "D": "Don't ask for consent"}, "correct": "B", "type": "understanding"},
+                {"id": 104, "question": "What is the importance of regular security audits?", "options": {"A": "Waste of resources", "B": "Identify vulnerabilities, ensure compliance, maintain trust", "C": "Only needed when breaches occur", "D": "Audits don't improve security"}, "correct": "B", "type": "understanding"},
+                {"id": 105, "question": "What is symmetric encryption?", "options": {"A": "Using different keys for encryption and decryption", "B": "Using the same key for both encryption and decryption", "C": "Encryption that's not balanced", "D": "Encryption that only works one way"}, "correct": "B", "type": "definition"},
+                {"id": 106, "question": "What is asymmetric encryption (public key)?", "options": {"A": "Same as symmetric encryption", "B": "Using different keys: public key (encrypt) and private key (decrypt)", "C": "Using keys in random order", "D": "Encryption without mathematical basis"}, "correct": "B", "type": "definition"},
+                {"id": 107, "question": "What is AES?", "options": {"A": "Advanced Email Security", "B": "Advanced Encryption Standard", "C": "Asymmetric Encryption Scheme", "D": "Automated Encryption System"}, "correct": "B", "type": "definition"},
+                {"id": 108, "question": "Why is AES commonly used in IoT?", "options": {"A": "It's very slow", "B": "Strong security with lower computational requirements", "C": "It's always secure", "D": "It requires minimal power"}, "correct": "B", "type": "understanding"},
+                {"id": 109, "question": "What is ECC (Elliptic Curve Cryptography)?", "options": {"A": "Only used for email encryption", "B": "Cryptographic algorithm with smaller key sizes than RSA, ideal for IoT", "C": "Only for large servers", "D": "Encryption that's easy to break"}, "correct": "B", "type": "definition"},
+                {"id": 110, "question": "What does TLS (Transport Layer Security) do?", "options": {"A": "Slows down data transmission", "B": "Encrypts data in transit between client and server", "C": "Only encrypts passwords", "D": "Transmits data in plain text"}, "correct": "B", "type": "understanding"},
+                {"id": 111, "question": "What is a digital signature?", "options": {"A": "A written signature scanned to digital format", "B": "Cryptographic technique proving authenticity and integrity of data", "C": "A digital photo of a signature", "D": "A type of encryption key"}, "correct": "B", "type": "definition"},
+                {"id": 112, "question": "How does authentication differ from encryption?", "options": {"A": "They are the same thing", "B": "Authentication verifies identity; encryption hides information", "C": "Encryption verifies identity", "D": "Authentication encrypts data"}, "correct": "B", "type": "understanding"},
+                {"id": 113, "question": "What is two-factor authentication (2FA)?", "options": {"A": "Two passwords", "B": "Two verification methods (password + second factor like OTP or biometric)", "C": "Two encryption keys", "D": "Two user accounts"}, "correct": "B", "type": "definition"},
+                {"id": 114, "question": "What is certificate-based authentication?", "options": {"A": "Using certificates as passwords", "B": "Digital certificates verifying identity and enabling secure communication", "C": "Paper certificates of completion", "D": "Certification of data ownership"}, "correct": "B", "type": "definition"},
+                {"id": 115, "question": "What is network segmentation?", "options": {"A": "Dividing network into smaller pieces randomly", "B": "Creating isolated network segments to limit access and contain breaches", "C": "Breaking down network infrastructure", "D": "Fragmenting all network packets"}, "correct": "B", "type": "definition"},
+                {"id": 116, "question": "What is a firewall in network security?", "options": {"A": "A physical barrier against heat", "B": "System that monitors and controls incoming/outgoing network traffic", "C": "A wall that stops fire", "D": "Software that slows down networks"}, "correct": "B", "type": "definition"},
+                {"id": 117, "question": "What does VPN (Virtual Private Network) provide?", "options": {"A": "Only faster internet", "B": "Encrypted tunnel hiding IP address and encrypting data", "C": "Virtual machines for servers", "D": "Wireless network connectivity"}, "correct": "B", "type": "understanding"},
+                {"id": 118, "question": "What is intrusion detection?", "options": {"A": "Blocking all network traffic", "B": "Monitoring networks to identify and alert on suspicious activity", "C": "Only detecting successful attacks", "D": "Preventing all connections"}, "correct": "B", "type": "definition"},
+                {"id": 119, "question": "What is intrusion prevention?", "options": {"A": "Only detection without action", "B": "Active measures to block detected attacks in real-time", "C": "Preventing users from accessing network", "D": "Manual blocking by administrators"}, "correct": "B", "type": "definition"},
+                {"id": 120, "question": "What does DLP (Data Loss Prevention) do?", "options": {"A": "Prevents data loss only during backups", "B": "Monitors and controls unauthorized data transmission/leakage", "C": "Deletes all sensitive data", "D": "Prevents any data access"}, "correct": "B", "type": "understanding"},
+                {"id": 121, "question": "What is a demilitarized zone (DMZ)?", "options": {"A": "A zone free from all security", "B": "Network segment separating internal systems from untrusted external networks", "C": "A military network area", "D": "A zone with no rules"}, "correct": "B", "type": "definition"},
+                {"id": 122, "question": "What is bandwidth management in network security?", "options": {"A": "Removing all bandwidth limitations", "B": "Controlling traffic flow to prevent resource exhaustion and DoS attacks", "C": "Maximizing bandwidth for all users", "D": "Limiting bandwidth only for certain protocols"}, "correct": "B", "type": "understanding"},
+                {"id": 123, "question": "What are cloud infrastructure types for IoT?", "options": {"A": "Only public clouds", "B": "Public, private, and hybrid clouds", "C": "Only private clouds", "D": "No cloud infrastructure"}, "correct": "B", "type": "understanding"},
+                {"id": 124, "question": "What does API security in cloud IoT involve?", "options": {"A": "No security measures", "B": "Authentication, encryption, rate limiting, and access control for APIs", "C": "Only username/password protection", "D": "Making APIs public"}, "correct": "B", "type": "understanding"},
+                {"id": 175, "question": "What is multi-tenancy vulnerability?", "options": {"A": "Too many renters in a building", "B": "One tenant's data leaking to other tenants sharing cloud infrastructure", "C": "Multiple clouds hosting the same data", "D": "Tenants sharing internet bandwidth"}, "correct": "B", "type": "understanding"},
+                {"id": 176, "question": "What is secure development lifecycle (SDLC)?", "options": {"A": "Quick software development", "B": "Integrating security practices throughout all development phases", "C": "Development without security", "D": "Only testing security"}, "correct": "B", "type": "definition"},
+                {"id": 177, "question": "What is input validation?", "options": {"A": "Validating user age", "B": "Checking and filtering user input to prevent injection attacks", "C": "Validating email addresses", "D": "Input authentication only"}, "correct": "B", "type": "definition"},
+                {"id": 178, "question": "What is output encoding?", "options": {"A": "Encoding video output", "B": "Converting output data to prevent code injection and XSS attacks", "C": "Audio encoding", "D": "Encoding user data"}, "correct": "B", "type": "definition"},
+                {"id": 179, "question": "What is secure coding practice?", "options": {"A": "Code written quickly", "B": "Writing code following security guidelines to prevent vulnerabilities", "C": "Code without comments", "D": "Coding without reviews"}, "correct": "B", "type": "definition"},
+                {"id": 180, "question": "What is dependency management?", "options": {"A": "Managing team dependencies", "B": "Tracking and updating third-party libraries and components for security patches", "C": "Managing user dependencies", "D": "Dependency prevention"}, "correct": "B", "type": "definition"},
+                {"id": 181, "question": "What is threat modeling?", "options": {"A": "Creating models of threats", "B": "Identifying potential security threats and designing countermeasures", "C": "Modeling network threats", "D": "Threat prevention only"}, "correct": "B", "type": "definition"},
+                {"id": 182, "question": "What is security testing?", "options": {"A": "Testing user security", "B": "Identifying vulnerabilities through testing before deployment", "C": "Testing only after deployment", "D": "Security verification only"}, "correct": "B", "type": "definition"},
+                {"id": 183, "question": "What is penetration testing?", "options": {"A": "Testing with pens", "B": "Authorized security experts simulating attacks to find vulnerabilities", "C": "Testing network penetration", "D": "Testing without authorization"}, "correct": "B", "type": "definition"},
+                {"id": 184, "question": "What is secure configuration?", "options": {"A": "Basic system configuration", "B": "Configuring systems following security best practices to minimize vulnerabilities", "C": "Configuration without rules", "D": "Configuring manually"}, "correct": "B", "type": "definition"},
+                {"id": 185, "question": "What is data encryption in transit?", "options": {"A": "Data moving between locations", "B": "Encrypting data while it's transmitted over networks", "C": "Transit encryption only", "D": "Data moving without protection"}, "correct": "B", "type": "definition"},
+                {"id": 186, "question": "What is data encryption at rest?", "options": {"A": "Data in databases only", "B": "Encrypting stored data on servers, disks, and storage media", "C": "Rest period encryption", "D": "Encryption only for servers"}, "correct": "B", "type": "definition"},
+                {"id": 187, "question": "What role does 5G play in IoT privacy?", "options": {"A": "5G eliminates privacy concerns", "B": "Enables higher data transmission but requires new security approaches", "C": "5G has no impact on privacy", "D": "5G makes privacy impossible"}, "correct": "B", "type": "understanding"},
+                {"id": 188, "question": "How does edge computing improve IoT privacy?", "options": {"A": "It centralizes all data in clouds", "B": "Processing data locally reduces transmission of sensitive data to clouds", "C": "Edge computing requires uploading everything", "D": "No privacy impact"}, "correct": "B", "type": "understanding"},
+                {"id": 189, "question": "What is AI's role in IoT security?", "options": {"A": "AI makes systems less secure", "B": "Anomaly detection, threat prediction, automated response", "C": "AI cannot help security", "D": "AI only for performance optimization"}, "correct": "B", "type": "understanding"},
+                {"id": 190, "question": "How can blockchain enhance IoT security?", "options": {"A": "Blockchain cannot help IoT", "B": "Immutable records, auditability, and decentralized trust", "C": "Blockchain makes everything public", "D": "Blockchain eliminates encryption need"}, "correct": "B", "type": "understanding"},
+                {"id": 191, "question": "What is quantum computing threat to encryption?", "options": {"A": "Quantum computers don't affect encryption", "B": "Quantum computers can break current encryption; requires post-quantum crypto", "C": "Quantum computers strengthen encryption", "D": "No threat exists"}, "correct": "B", "type": "understanding"},
+                {"id": 192, "question": "What is zero-trust architecture?", "options": {"A": "Never trust, always verify every access request", "B": "Trust everyone automatically", "C": "No security needed", "D": "Trust only administrators"}, "correct": "A", "type": "definition"},
+                {"id": 193, "question": "What does continuous monitoring enable?", "options": {"A": "Continuous data collection", "B": "Real-time threat detection and immediate response", "C": "Monitoring only during business hours", "D": "No benefits for security"}, "correct": "B", "type": "understanding"},
+                {"id": 194, "question": "What is IoT device lifecycle management?", "options": {"A": "Managing device lifespan", "B": "Tracking devices from provisioning through decommissioning for security", "C": "Device manufacturing", "D": "Device usage tracking"}, "correct": "B", "type": "definition"},
+                {"id": 195, "question": "What is secure device provisioning?", "options": {"A": "Providing devices to users", "B": "Securely initializing and configuring devices with proper credentials and policies", "C": "Device supply management", "D": "Device provisioning process"}, "correct": "B", "type": "definition"},
+                {"id": 196, "question": "What is device decommissioning?", "options": {"A": "Removing commission from devices", "B": "Securely removing data and disabling devices when no longer needed", "C": "Device removal from service", "D": "Device warranty removal"}, "correct": "B", "type": "definition"},
+                {"id": 197, "question": "What is privacy-preserving analytics?", "options": {"A": "Analytics without data", "B": "Analyzing data insights while maintaining individual privacy", "C": "Analytics tools", "D": "Analytics privacy settings"}, "correct": "B", "type": "definition"},
+                {"id": 198, "question": "What is data governance?", "options": {"A": "Government data", "B": "Establishing policies and procedures for data management, security, and quality", "C": "Data government", "D": "Data policies only"}, "correct": "B", "type": "definition"},
+                {"id": 199, "question": "What is privacy by default?", "options": {"A": "Default privacy settings", "B": "Privacy protections apply automatically without user configuration", "C": "Privacy configuration", "D": "Default security"}, "correct": "B", "type": "definition"},
+                {"id": 200, "question": "What is user empowerment in IoT privacy?", "options": {"A": "Empowering users", "B": "Giving users control and information to make privacy choices", "C": "User controls", "D": "Privacy choices"}, "correct": "B", "type": "definition"},
+                {"id": 160, "question": "How does edge computing improve IoT privacy?", "options": {"A": "It centralizes all data in clouds", "B": "Processing data locally reduces transmission of sensitive data to clouds", "C": "Edge computing requires uploading everything", "D": "No privacy impact"}, "correct": "B", "type": "understanding"},
+                {"id": 161, "question": "What is AI's role in IoT security?", "options": {"A": "AI makes systems less secure", "B": "Anomaly detection, threat prediction, automated response", "C": "AI cannot help security", "D": "AI only for performance optimization"}, "correct": "B", "type": "understanding"},
+                {"id": 162, "question": "How can blockchain enhance IoT security?", "options": {"A": "Blockchain cannot help IoT", "B": "Immutable records, auditability, and decentralized trust", "C": "Blockchain makes everything public", "D": "Blockchain eliminates encryption need"}, "correct": "B", "type": "understanding"},
+                {"id": 163, "question": "What is quantum computing threat to IoT encryption?", "options": {"A": "Quantum computers don't affect encryption", "B": "Quantum computers can break current encryption; requires post-quantum crypto", "C": "Quantum computers strengthen encryption", "D": "No threat exists"}, "correct": "B", "type": "understanding"},
+                {"id": 164, "question": "What is the future of privacy regulations?", "options": {"A": "No future regulations needed", "B": "Stricter regulations, sector-specific rules, enforcement increasing", "C": "Regulations will be eliminated", "D": "Only USA will have regulations"}, "correct": "B", "type": "understanding"},
+                {"id": 165, "question": "What makes IoT privacy different from traditional IT privacy?", "options": {"A": "IoT privacy is simpler", "B": "Distributed devices, long lifespans, limited resources, autonomous operation", "C": "Privacy is identical in both", "D": "IoT doesn't need privacy"}, "correct": "B", "type": "understanding"},
+                {"id": 166, "question": "How can machine learning models in IoT preserve privacy?", "options": {"A": "ML always requires all data", "B": "Federated learning, model encryption, on-device training minimize data exposure", "C": "Privacy and ML cannot coexist", "D": "Only centralized ML works"}, "correct": "B", "type": "understanding"},
+                {"id": 167, "question": "What are the challenges of IoT security in developing countries?", "options": {"A": "No challenges exist", "B": "Limited resources, slower updates, lower awareness, regulatory gaps", "C": "Only developed countries face security challenges", "D": "Developing countries have better security"}, "correct": "B", "type": "understanding"},
+                {"id": 168, "question": "How should IoT systems balance innovation with security?", "options": {"A": "Ignore security for innovation", "B": "Security from design; secure development practices; regular updates", "C": "Innovation and security are mutually exclusive", "D": "Innovation doesn't require security"}, "correct": "B", "type": "understanding"},
+                {"id": 169, "question": "What psychological factors influence IoT user privacy behavior?", "options": {"A": "User psychology is irrelevant", "B": "Privacy fatigue, trust in brands, convenience preference influence decisions", "C": "Users always make optimal choices", "D": "Psychology has no impact"}, "correct": "B", "type": "understanding"},
+                {"id": 170, "question": "How does environmental monitoring IoT ensure privacy?", "options": {"A": "Environmental data has no privacy concerns", "B": "Differential privacy, aggregation, limited personal data collection", "C": "Privacy is not possible for environmental systems", "D": "Environmental IoT doesn't collect data"}, "correct": "B", "type": "understanding"},
+                {"id": 171, "question": "How can IoT systems implement 'purpose limitation' in practice?", "options": {"A": "Collect data for any purpose", "B": "Clearly define purposes, limit use to those purposes only, require new consent for new uses", "C": "Purpose limitation cannot be implemented", "D": "Purpose changes don't require notification"}, "correct": "B", "type": "understanding"},
+                {"id": 172, "question": "What is the significance of audit trails in IoT systems?", "options": {"A": "Audit trails are not important", "B": "Enable accountability, detect breaches, support compliance, investigate incidents", "C": "Only for financial systems", "D": "Audit trails compromise performance"}, "correct": "B", "type": "understanding"},
+                {"id": 173, "question": "How does the principle of 'least privilege' apply to IoT?", "options": {"A": "Give all devices maximum permissions", "B": "Each device has only minimum permissions needed for its function", "C": "Least privilege slows IoT systems", "D": "Privilege is not relevant to IoT"}, "correct": "B", "type": "understanding"},
+                {"id": 174, "question": "How should organizations handle vendor security vulnerabilities?", "options": {"A": "Ignore vulnerabilities", "B": "Secure update mechanisms, vulnerability management, contingency plans", "C": "Replace all devices immediately", "D": "Hope vulnerabilities aren't exploited"}, "correct": "B", "type": "understanding"},
+                {"id": 175, "question": "What is the relationship between IoT scalability and privacy challenges?", "options": {"A": "Scalability doesn't affect privacy", "B": "Larger systems exponentially increase privacy risks requiring new approaches", "C": "Scalability improves privacy", "D": "Privacy is irrelevant for large systems"}, "correct": "B", "type": "understanding"},
+                {"id": 176, "question": "How should organizations handle personal data deletion requests?", "options": {"A": "Deletion is not possible", "B": "Remove data from active systems and backups within compliance timeframe", "C": "Personal data cannot be deleted", "D": "Users have no right to deletion"}, "correct": "B", "type": "understanding"},
+                {"id": 177, "question": "What is the role of transparency in IoT privacy trust?", "options": {"A": "Transparency is not important", "B": "Users need to understand data practices; enables informed decisions", "C": "Transparency always harms adoption", "D": "Trust doesn't require transparency"}, "correct": "B", "type": "understanding"},
+                {"id": 178, "question": "How will quantum computing change IoT security requirements?", "options": {"A": "Quantum computers won't affect IoT", "B": "Post-quantum cryptography needed; current encryption becomes obsolete", "C": "Quantum computers improve existing encryption", "D": "No changes needed for IoT"}, "correct": "B", "type": "understanding"},
+                {"id": 179, "question": "How should IoT systems maintain privacy during security incident response?", "options": {"A": "Ignore privacy during incidents", "B": "Limit data access, document handling, notify affected users, minimize exposure", "C": "Breach response requires sharing all data", "D": "Privacy doesn't apply during incidents"}, "correct": "B", "type": "understanding"},
+                {"id": 180, "question": "What role does data tokenization play in IoT privacy?", "options": {"A": "Tokenization is not useful", "B": "Replacing sensitive data with tokens reducing exposure in breaches", "C": "Tokenization weakens security", "D": "Only for cryptocurrency"}, "correct": "B", "type": "understanding"},
+            ],
+        };
+
+        // Quiz state
+        let quizState = {
+            allQuestions: [],
+            currentIndex: 0,
+            selectedAnswers: {},
+            correctCount: 0,
+            chapterMode: false
+        };
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            populateChapterSelect();
+            loadAllQuestions();
+        });
+
+        function populateChapterSelect() {
+            const select = document.getElementById('chapterSelect');
+            Object.keys(questionsData).forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = chapter;
+                select.appendChild(option);
+            });
+            select.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    loadChapter(e.target.value);
+                }
+            });
+        }
+
+        function loadChapter(chapterName) {
+            quizState.allQuestions = questionsData[chapterName];
+            quizState.currentIndex = 0;
+            quizState.selectedAnswers = {};
+            quizState.correctCount = 0;
+            quizState.chapterMode = true;
+            document.getElementById('navigationButtons').style.display = 'flex';
+            document.getElementById('resultsPanel').classList.remove('show');
+            showQuestion();
+        }
+
+        function loadAllQuestions() {
+            quizState.allQuestions = Object.values(questionsData).flat();
+            document.getElementById('totalQuestions').textContent = quizState.allQuestions.length;
+        }
+
+        function showQuestion() {
+            const question = quizState.allQuestions[quizState.currentIndex];
+            let html = `
+                <div class="question-number">Question ${quizState.currentIndex + 1} of ${quizState.allQuestions.length}</div>
+                <div class="question-text">
+                    ${question.question}
+                    <span class="question-type">${question.type}</span>
+                </div>
+                <div class="options">
+            `;
+            Object.entries(question.options).forEach(([key, value]) => {
+                const isSelected = quizState.selectedAnswers[quizState.currentIndex] === key;
+                const isCorrect = key === question.correct && quizState.selectedAnswers[quizState.currentIndex];
+                const isIncorrect = isSelected && key !== question.correct;
+                let className = 'option';
+                if (isSelected) className += ' selected';
+                if (isCorrect) className += ' correct';
+                if (isIncorrect) className += ' incorrect';
+                html += `
+                    <div class="${className}" onclick="selectAnswer('${key}')">
+                        <div class="option-label">${key}</div>
+                        ${value}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            if (quizState.selectedAnswers[quizState.currentIndex]) {
+                const answered = quizState.selectedAnswers[quizState.currentIndex];
+                const isCorrect = answered === question.correct;
+                html += `
+                    <div class="feedback show ${isCorrect ? 'correct' : 'incorrect'}">
+                        ${isCorrect ? '✓ Correct!' : '✗ Incorrect'}
+                    </div>
+                `;
+            }
+            document.getElementById('questionContainer').innerHTML = html;
+            document.getElementById('currentQuestion').textContent = quizState.currentIndex + 1;
+            document.getElementById('prevBtn').disabled = quizState.currentIndex === 0;
+            document.getElementById('nextBtn').disabled = false;
+            const progress = ((quizState.currentIndex + 1) / quizState.allQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function selectAnswer(answer) {
+            const question = quizState.allQuestions[quizState.currentIndex];
+            quizState.selectedAnswers[quizState.currentIndex] = answer;
+            if (answer === question.correct) {
+                quizState.correctCount++;
+                document.getElementById('correctCount').textContent = quizState.correctCount;
+            }
+            showQuestion();
+        }
+
+        function nextQuestion() {
+            if (quizState.currentIndex < quizState.allQuestions.length - 1) {
+                quizState.currentIndex++;
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (quizState.currentIndex > 0) {
+                quizState.currentIndex--;
+                showQuestion();
+            }
+        }
+
+        function showResults() {
+            const total = quizState.allQuestions.length;
+            const correct = quizState.correctCount;
+            const percentage = Math.round((correct / total) * 100);
+            document.getElementById('resultCorrect').textContent = correct;
+            document.getElementById('resultIncorrect').textContent = total - correct;
+            document.getElementById('resultScore').textContent = percentage + '%';
+            const scoreCircle = document.getElementById('scoreCircle');
+            scoreCircle.textContent = percentage + '%';
+            scoreCircle.className = 'score-circle ' + (percentage >= 70 ? 'high' : percentage >= 50 ? 'medium' : 'low');
+            document.getElementById('navigationButtons').style.display = 'none';
+            document.getElementById('questionContainer').innerHTML = '';
+            document.getElementById('resultsPanel').classList.add('show');
+        }
+
+        function shuffleQuestions() {
+            if (quizState.allQuestions.length === 0) {
+                alert('Please select a chapter first');
+                return;
+            }
+            quizState.allQuestions = quizState.allQuestions.sort(() => 0.5 - Math.random());
+            quizState.currentIndex = 0;
+            quizState.selectedAnswers = {};
+            quizState.correctCount = 0;
+            document.getElementById('navigationButtons').style.display = 'flex';
+            document.getElementById('resultsPanel').classList.remove('show');
+            showQuestion();
+        }
+
+        function resetQuiz() {
+            quizState = {
+                allQuestions: [],
+                currentIndex: 0,
+                selectedAnswers: {},
+                correctCount: 0,
+                chapterMode: false
+            };
+            document.getElementById('chapterSelect').value = '';
+            document.getElementById('questionContainer').innerHTML = '<div style="text-align: center; color: #999; padding: 40px;"><p>Select a chapter to begin the assessment</p></div>';
+            document.getElementById('navigationButtons').style.display = 'none';
+            document.getElementById('resultsPanel').classList.remove('show');
+            document.getElementById('correctCount').textContent = '0';
+            document.getElementById('currentQuestion').textContent = '0';
+            document.getElementById('progressFill').style.width = '0%';
+            loadAllQuestions();
+        }
+    </script>
+</body>
+</html>
